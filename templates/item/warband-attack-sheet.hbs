@@ -1,20 +1,20 @@
-<form class="{{cssClass}} ds-wb-attack-sheet" autocomplete="off">
-  <header class="ds-wb-item-header">
+<form class="{{cssClass}} gt-wb-attack-sheet" autocomplete="off">
+  <header class="gt-wb-item-header">
     <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}">
     <input name="name" type="text" value="{{item.name}}" placeholder="Attack Name">
   </header>
-  <div class="ds-wb-section">
+  <div class="gt-wb-section">
     <div class="form-group"><label>Range / Type</label><select name="system.range">{{#each rangeOptions as |opt|}}<option value="{{opt.value}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>{{/each}}</select></div>
     <div class="form-group"><label>{{profile.labels.dominantAbility}}</label><select name="system.dominantAbility">{{#each dominantOptions as |opt|}}<option value="{{opt.key}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>{{/each}}</select></div>
     <div class="form-group"><label>Attack-specific Extra Damage Dice</label><input name="system.extraDamageDice" type="number" step="1" value="{{system.extraDamageDice}}"></div>
   </div>
   {{#if damage}}
-  <div class="ds-wb-item-preview">
+  <div class="gt-wb-item-preview">
     <h3>Current Warband Result</h3>
     <p><strong>Damage:</strong> {{damage.formula}}</p>
     <p><strong>Base dice:</strong> {{damage.baseDice}} | <strong>Additional dice:</strong> {{damage.addedDice}}</p>
     {{#if damage.magical}}<p><strong>Property:</strong> {{damage.propertyLabel}}</p>{{/if}}
   </div>
   {{else}}<p class="notes">Embed this attack in a Warband Actor to calculate its final damage.</p>{{/if}}
-  <div class="ds-wb-section"><label>Notes</label><textarea name="system.notes" rows="8">{{system.notes}}</textarea></div>
+  <div class="gt-wb-section"><label>Notes</label><textarea name="system.notes" rows="8">{{system.notes}}</textarea></div>
 </form>

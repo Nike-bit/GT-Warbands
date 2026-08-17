@@ -1,0 +1,56 @@
+.gt-warbands.sheet { min-width: 520px; }
+.gt-wb-sheet, .gt-wb-attack-sheet, .gt-wb-profile-config { padding: 10px; }
+.gt-wb-header, .gt-wb-item-header { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.gt-wb-header .profile-img { width:88px; height:88px; object-fit:cover; border:2px solid currentColor; }
+.gt-wb-item-header .profile-img { width:64px; height:64px; object-fit:cover; }
+.gt-wb-title-block { flex:1; }
+.gt-wb-name, .gt-wb-item-header input[name="name"] { width:100%; height:42px; font-size:1.6rem; font-weight:800; }
+.gt-wb-profile-label { margin-top:3px; font-size:.75rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; opacity:.65; }
+.gt-wb-top-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.gt-wb-panel { border:2px solid currentColor; padding:8px; text-align:center; }
+.gt-wb-panel-title, .gt-wb-section-title { font-size:.76rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+.gt-wb-derived-big { display:block; margin:5px; font-size:2.1rem; font-weight:900; line-height:1.1; }
+.gt-wb-pair-fields { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.gt-wb-pair-fields label { display:grid; grid-template-columns:1fr 52px; align-items:center; gap:4px; text-align:left; }
+.gt-wb-pair-fields input, .gt-wb-effectiveness input { text-align:center; font-weight:800; }
+.gt-wb-effectiveness { display:flex; justify-content:center; align-items:center; gap:7px; margin:7px 0 2px; font-size:1.45rem; }
+.gt-wb-effectiveness input { width:72px; font-size:1.25rem; }
+.gt-wb-state { font-weight:900; text-transform:uppercase; letter-spacing:.08em; }
+.gt-wb-effectiveness-formula { margin:4px 0 7px; font-size:.76rem; opacity:.8; }
+.gt-wb-warning { margin-left:5px; font-weight:900; }
+.gt-wb-combat-strip { display:grid; grid-template-columns:repeat(4,1fr); border:2px solid currentColor; margin-bottom:12px; }
+.gt-wb-combat-strip > div { padding:6px; text-align:center; border-right:1px solid currentColor; }
+.gt-wb-combat-strip > div:last-child { border-right:0; }
+.gt-wb-combat-strip span, .gt-wb-combat-strip small { display:block; font-size:.68rem; font-weight:800; text-transform:uppercase; }
+.gt-wb-combat-strip strong { display:block; font-size:1.2rem; }
+.gt-wb-section { margin-bottom:12px; }
+.gt-wb-section-title { border-bottom:2px solid currentColor; padding-bottom:3px; margin-bottom:6px; }
+.gt-wb-section-header { display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:2px solid currentColor; margin-bottom:6px; }
+.gt-wb-section-header .gt-wb-section-title { border:0; margin:0; }
+.gt-wb-compact-button { width:auto; margin-left:4px; font-size:.75rem; }
+.gt-wb-ability-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:6px 0; }
+.gt-wb-ability-card { display:grid; grid-template-columns:1fr 18px 60px; align-items:center; gap:5px; border:1px solid currentColor; padding:6px 8px; }
+.gt-wb-ability-label { display:flex; flex-direction:column; }
+.gt-wb-ability-label strong { font-size:1rem; }
+.gt-wb-ability-label small { font-size:.68rem; opacity:.55; }
+.gt-wb-plus { text-align:right; font-size:1.2rem; font-weight:900; }
+.gt-wb-ability-card input { text-align:center; font-size:1.15rem; font-weight:800; }
+.gt-wb-config-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.gt-wb-config-grid label { display:grid; gap:3px; }
+.gt-wb-config-grid label span { font-weight:700; font-size:.78rem; }
+.gt-wb-config-grid label:last-child { grid-column:1 / -1; }
+.gt-wb-attack-row { display:grid; grid-template-columns:24px 1fr 24px 24px; align-items:center; gap:6px; border-bottom:1px solid currentColor; padding:5px 2px; }
+.gt-wb-attack-main { display:grid; grid-template-columns:1.5fr .7fr .9fr .7fr auto; align-items:center; gap:6px; }
+.gt-wb-attack-main > span, .gt-wb-attack-main > small { font-size:.72rem; opacity:.8; }
+.gt-wb-star { text-align:center; }
+.gt-wb-empty { padding:10px; text-align:center; opacity:.65; }
+.gt-wb-section textarea, .gt-wb-attack-sheet textarea { width:100%; resize:vertical; }
+.notes { font-size:.76rem; opacity:.72; line-height:1.3; }
+.gt-wb-item-preview { border:1px solid currentColor; padding:8px; margin:10px 0; }
+.gt-wb-profile-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0 14px; }
+.gt-wb-profile-grid, .gt-wb-die-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:12px; }
+.gt-wb-profile-grid label, .gt-wb-die-grid label { display:grid; grid-template-columns:110px 1fr; align-items:center; gap:7px; }
+.gt-wb-chat-card h2, .gt-wb-chat-card h3 { margin-bottom:4px; }
+.gt-wb-chat-card ol { margin:5px 0 5px 20px; }
+.gt-wb-chat-property { display:inline-block; margin-left:5px; padding:0 4px; border:1px solid currentColor; font-size:.7rem; font-weight:800; text-transform:uppercase; }
+.gt-wb-exchange-card hr { margin:10px 0; }

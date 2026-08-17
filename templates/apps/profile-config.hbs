@@ -1,17 +1,17 @@
-<form class="ds-wb-profile-config" autocomplete="off">
+<form class="gt-wb-profile-config" autocomplete="off">
   <h2>Warband Rules Profile</h2>
   <div class="form-group"><label>Active Profile</label><select name="activeProfile">{{#each profiles as |opt|}}<option value="{{opt.value}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>{{/each}}</select></div>
   <p class="notes">Shadowdark (Default) is built in and immutable. Clone it into Custom before changing labels or mathematics.</p>
-  <div class="ds-wb-profile-actions"><button type="button" data-action="clone-default"><i class="fas fa-copy"></i> Clone Default to Custom</button><button type="button" data-action="reset-custom"><i class="fas fa-rotate-left"></i> Reset Custom</button></div>
+  <div class="gt-wb-profile-actions"><button type="button" data-action="clone-default"><i class="fas fa-copy"></i> Clone Default to Custom</button><button type="button" data-action="reset-custom"><i class="fas fa-rotate-left"></i> Reset Custom</button></div>
 
   <h2>Custom Profile</h2>
   <div class="form-group"><label>Profile Name</label><input type="text" name="custom.name" value="{{custom.name}}"></div>
 
   <h3>Quality Labels</h3>
-  <div class="ds-wb-profile-grid">{{#each qualityLabelRows as |quality|}}<label><span>{{quality.generic}}</span><input type="text" name="custom.labels.{{quality.key}}" value="{{quality.label}}"></label>{{/each}}</div>
+  <div class="gt-wb-profile-grid">{{#each qualityLabelRows as |quality|}}<label><span>{{quality.generic}}</span><input type="text" name="custom.labels.{{quality.key}}" value="{{quality.label}}"></label>{{/each}}</div>
 
   <h3>Ability Labels</h3>
-  <div class="ds-wb-profile-grid">{{#each abilityRows as |ability|}}<label><span>{{ability.generic}}</span><input type="text" name="custom.abilities.{{ability.key}}.label" value="{{ability.label}}"></label>{{/each}}</div>
+  <div class="gt-wb-profile-grid">{{#each abilityRows as |ability|}}<label><span>{{ability.generic}}</span><input type="text" name="custom.abilities.{{ability.key}}.label" value="{{ability.label}}"></label>{{/each}}</div>
 
   <h3>Core Formulas</h3>
   <p class="notes">Variables: basePower, veterancy, power, ability1A, ability2A, ability1B, ability2B, ability1C, ability2C, dominantAbility, extraDamageDice, mightCap. Functions: floor, ceil, round, min, max, abs.</p>
@@ -24,7 +24,7 @@
 
   <h3>Might Damage Die</h3>
   <div class="form-group"><label>Might cap before overflow dice</label><input type="number" min="0" step="1" name="custom.damage.mightCap" value="{{custom.damage.mightCap}}"></div>
-  <div class="ds-wb-die-grid">
+  <div class="gt-wb-die-grid">
     <label><span>Might +0</span><input type="number" min="2" step="1" name="custom.damage.mightDieFaces.0" value="{{custom.damage.mightDieFaces.0}}"></label>
     <label><span>Might +1</span><input type="number" min="2" step="1" name="custom.damage.mightDieFaces.1" value="{{custom.damage.mightDieFaces.1}}"></label>
     <label><span>Might +2</span><input type="number" min="2" step="1" name="custom.damage.mightDieFaces.2" value="{{custom.damage.mightDieFaces.2}}"></label>

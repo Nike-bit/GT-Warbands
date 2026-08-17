@@ -1,7 +1,7 @@
 {
-  "TYPES.Actor.ds-warbands.warband": "Warband",
-  "TYPES.Item.ds-warbands.attack": "Warband Attack",
-  "DSWARBANDS.ProfileMenu.Name": "Warband Profiles",
-  "DSWARBANDS.ProfileMenu.Label": "Configure",
-  "DSWARBANDS.ProfileMenu.Hint": "Select the active Warband rules profile or clone Shadowdark (Default) into an editable Custom profile."
+  "TYPES.Actor.gt-warbands.warband": "Warband",
+  "TYPES.Item.gt-warbands.attack": "Warband Attack",
+  "GTWARBANDS.ProfileMenu.Name": "Warband Profiles",
+  "GTWARBANDS.ProfileMenu.Label": "Configure",
+  "GTWARBANDS.ProfileMenu.Hint": "Select the active Warband rules profile or clone Shadowdark (Default) into an editable Custom profile."
 }

@@ -1,4 +1,4 @@
-# DS-Warbands — Current Design Snapshot
+# GT-Warbands — Current Design Snapshot
 
 ## Architecture
 

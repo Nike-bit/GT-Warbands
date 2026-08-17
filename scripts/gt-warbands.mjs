@@ -1,4 +1,4 @@
-const MODULE_ID = "ds-warbands";
+const MODULE_ID = "gt-warbands";
 const WARBAND_TYPE = `${MODULE_ID}.warband`;
 const ATTACK_TYPE = `${MODULE_ID}.attack`;
 
@@ -86,9 +86,9 @@ function registerSettings() {
     name: "Custom Warband Profile", scope: "world", config: false, type: Object, default: clone(DEFAULT_PROFILE)
   });
   game.settings.registerMenu(MODULE_ID, "profileMenu", {
-    name: game.i18n.localize("DSWARBANDS.ProfileMenu.Name"),
-    label: game.i18n.localize("DSWARBANDS.ProfileMenu.Label"),
-    hint: game.i18n.localize("DSWARBANDS.ProfileMenu.Hint"),
+    name: game.i18n.localize("GTWARBANDS.ProfileMenu.Name"),
+    label: game.i18n.localize("GTWARBANDS.ProfileMenu.Label"),
+    hint: game.i18n.localize("GTWARBANDS.ProfileMenu.Hint"),
     icon: "fas fa-users-gear",
     type: WarbandProfileConfig,
     restricted: true
@@ -299,13 +299,13 @@ async function evaluateAttackSet(attacker, attack, defender = null) {
 function renderAttackSetHtml(data) {
   const profile = getActiveProfile();
   const target = data.defender ? ` vs ${escapeHtml(data.defender.name)} (AC ${data.targetAC})` : "";
-  const prop = data.damage.magical ? `<span class="ds-wb-chat-property">${escapeHtml(data.damage.propertyLabel)}</span>` : "";
+  const prop = data.damage.magical ? `<span class="gt-wb-chat-property">${escapeHtml(data.damage.propertyLabel)}</span>` : "";
   const rows = data.results.map((r, i) => {
     const hit = r.hit === null ? "" : r.hit ? " — HIT" : " — MISS";
     const damage = r.hit === false ? "" : ` | Damage ${r.damageRoll?.total ?? 0}${r.defense && r.defense.final !== r.defense.raw ? ` → ${r.defense.final}` : ""}`;
     return `<li><strong>#${i + 1}</strong> Attack ${r.attackRoll.total}${hit}${damage}</li>`;
   }).join("");
-  return `<div class="ds-wb-chat-card"><h3>${escapeHtml(data.attacker.name)} — ${escapeHtml(data.attack?.name ?? profile.labels.attack)}${target}</h3><p><strong>${escapeHtml(profile.labels.attack)}:</strong> ${formatBonus(data.derived.attackBonus)} &nbsp; <strong>${escapeHtml(profile.labels.damage)}:</strong> ${escapeHtml(data.damage.formula)} ${prop}</p><ol>${rows}</ol>${data.defender ? `<p><strong>Total Effectiveness Damage:</strong> ${data.totalDamage}</p>` : ""}</div>`;
+  return `<div class="gt-wb-chat-card"><h3>${escapeHtml(data.attacker.name)} — ${escapeHtml(data.attack?.name ?? profile.labels.attack)}${target}</h3><p><strong>${escapeHtml(profile.labels.attack)}:</strong> ${formatBonus(data.derived.attackBonus)} &nbsp; <strong>${escapeHtml(profile.labels.damage)}:</strong> ${escapeHtml(data.damage.formula)} ${prop}</p><ol>${rows}</ol>${data.defender ? `<p><strong>Total Effectiveness Damage:</strong> ${data.totalDamage}</p>` : ""}</div>`;
 }
 
 async function rollAttack(actor, attack) {
@@ -336,7 +336,7 @@ async function resolveMeleeExchange(attacker) {
   await defender.update({ "system.effectiveness.value": dAfter });
 
   const p = getActiveProfile();
-  const content = `<div class="ds-wb-chat-card ds-wb-exchange-card"><h2>Warband Melee Exchange</h2>${renderAttackSetHtml(aResult)}<p><strong>${escapeHtml(defender.name)}:</strong> ${dBefore} → ${dAfter} ${escapeHtml(p.labels.effectiveness)}</p><hr>${renderAttackSetHtml(dResult)}<p><strong>${escapeHtml(attacker.name)}:</strong> ${aBefore} → ${aAfter} ${escapeHtml(p.labels.effectiveness)}</p><p><em>Both sides resolved committed attacks before Effectiveness losses were applied.</em></p></div>`;
+  const content = `<div class="gt-wb-chat-card gt-wb-exchange-card"><h2>Warband Melee Exchange</h2>${renderAttackSetHtml(aResult)}<p><strong>${escapeHtml(defender.name)}:</strong> ${dBefore} → ${dAfter} ${escapeHtml(p.labels.effectiveness)}</p><hr>${renderAttackSetHtml(dResult)}<p><strong>${escapeHtml(attacker.name)}:</strong> ${aBefore} → ${aAfter} ${escapeHtml(p.labels.effectiveness)}</p><p><em>Both sides resolved committed attacks before Effectiveness losses were applied.</em></p></div>`;
   await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: attacker }), content });
 }
 
@@ -387,7 +387,7 @@ const FormApplicationV1 = foundry.appv1.api.FormApplication;
 class WarbandSheet extends ActorSheetV1 {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["ds-warbands", "sheet", "actor", "warband"],
+      classes: ["gt-warbands", "sheet", "actor", "warband"],
       width: 700,
       height: 820,
       resizable: true,
@@ -491,7 +491,7 @@ class WarbandSheet extends ActorSheetV1 {
 class WarbandAttackSheet extends ItemSheetV1 {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["ds-warbands", "sheet", "item", "warband-attack"],
+      classes: ["gt-warbands", "sheet", "item", "warband-attack"],
       width: 500,
       height: 500,
       resizable: true,
@@ -535,8 +535,8 @@ class WarbandAttackSheet extends ItemSheetV1 {
 class WarbandProfileConfig extends FormApplicationV1 {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "ds-warbands-profile-config",
-      title: "DS-Warbands — Profiles",
+      id: "gt-warbands-profile-config",
+      title: "GT-Warbands — Profiles",
       template: `modules/${MODULE_ID}/templates/apps/profile-config.hbs`,
       width: 760,
       height: 820,
@@ -657,8 +657,8 @@ Hooks.once("init", () => {
   Object.assign(CONFIG.Actor.dataModels, { [WARBAND_TYPE]: WarbandModel });
   Object.assign(CONFIG.Item.dataModels, { [ATTACK_TYPE]: WarbandAttackModel });
   const DSC = foundry.applications.apps.DocumentSheetConfig;
-  DSC.registerSheet(foundry.documents.Actor, MODULE_ID, WarbandSheet, { types: [WARBAND_TYPE], makeDefault: true, label: "DS-Warbands" });
-  DSC.registerSheet(foundry.documents.Item, MODULE_ID, WarbandAttackSheet, { types: [ATTACK_TYPE], makeDefault: true, label: "DS-Warbands Attack" });
+  DSC.registerSheet(foundry.documents.Actor, MODULE_ID, WarbandSheet, { types: [WARBAND_TYPE], makeDefault: true, label: "GT-Warbands" });
+  DSC.registerSheet(foundry.documents.Item, MODULE_ID, WarbandAttackSheet, { types: [ATTACK_TYPE], makeDefault: true, label: "GT-Warbands Attack" });
   console.log(`${MODULE_ID} | Registered Warband Actor and Attack subtypes.`);
 });
 
@@ -668,6 +668,6 @@ Hooks.once("ready", () => {
     WARBAND_TYPE, ATTACK_TYPE, DEFAULT_PROFILE, getActiveProfile, deriveWarband, deriveDamage,
     rollEffectiveness, rollAttack, resolveMeleeExchange, applyPropertyDefense
   };
-  if (game.system.id !== "shadowdark") ui.notifications.warn("DS-Warbands 0.3.0 is currently designed for Shadowdark.");
+  if (game.system.id !== "shadowdark") ui.notifications.warn("GT-Warbands 0.3.0 is currently designed for Shadowdark.");
   console.log(`${MODULE_ID} | Ready — ${getActiveProfile().name}`);
 });

@@ -10,8 +10,8 @@ First playable foundation for the profile-driven Warband Actor system developed 
 
 The module uses Foundry's module-provided Document subtype system to add:
 
-- `ds-warbands.warband` Actor
-- `ds-warbands.attack` Item
+- `gt-warbands.warband` Actor
+- `gt-warbands.attack` Item
 
 ## Shadowdark (Default) Profile
 
@@ -160,7 +160,7 @@ Direct Shadowdark Active Effect integration is intentionally deferred because th
 
 Open:
 
-Configure Settings -> Module Settings -> DS-Warbands -> Warband Profiles
+Configure Settings -> Module Settings -> GT-Warbands -> Warband Profiles
 
 Available:
 

@@ -1,0 +1,21 @@
+{
+  "id": "gt-warbands",
+  "title": "GT-Warbands",
+  "description": "Profile-driven Warband Actor framework for Shadowdark. Adds a dedicated Warband actor, Warband Attack items, rolled Effectiveness, profile-defined abilities, damage scaling, and simultaneous melee exchanges.",
+  "version": "0.3.0",
+  "compatibility": {"minimum": "14", "verified": "14"},
+  "esmodules": ["scripts/ds-warbands.mjs"],
+  "styles": ["styles/ds-warbands.css"],
+  "languages": [{"lang": "en", "name": "English", "path": "lang/en.json"}],
+  "documentTypes": {
+    "Actor": {"warband": {}},
+    "Item": {"attack": {}}
+  },
+  "relationships": {
+    "systems": [{
+      "id": "shadowdark",
+      "type": "system",
+      "compatibility": {"minimum": "4.0.0", "verified": "4.0.6"}
+    }]
+  }
+}

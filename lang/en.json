@@ -1,0 +1,7 @@
+{
+  "TYPES.Actor.ds-warbands.warband": "Warband",
+  "TYPES.Item.ds-warbands.attack": "Warband Attack",
+  "DSWARBANDS.ProfileMenu.Name": "Warband Profiles",
+  "DSWARBANDS.ProfileMenu.Label": "Configure",
+  "DSWARBANDS.ProfileMenu.Hint": "Select the active Warband rules profile or clone Shadowdark (Default) into an editable Custom profile."
+}

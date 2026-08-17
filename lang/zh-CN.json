@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "已将 Shadowdark（默认）复制为自定义配置。",
   "GTWARBANDS.Notification.Reset": "已使用 Shadowdark（默认）重置自定义配置。",
   "GTWARBANDS.Notification.ProfileActive": "战团规则配置：{name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 当前专为 Shadowdark 设计。",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 当前专为 Shadowdark 设计。",
   "GTWARBANDS.Error.EmptyFormula": "公式不能为空。",
   "GTWARBANDS.Error.UnsupportedFormula": "公式中包含不支持的字符：{formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "公式中存在未知标识符 \"{identifier}\"。",

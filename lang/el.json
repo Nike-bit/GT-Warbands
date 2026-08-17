@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Το Shadowdark (Προεπιλογή) αντιγράφηκε σε Προσαρμοσμένο προφίλ.",
   "GTWARBANDS.Notification.Reset": "Το Προσαρμοσμένο προφίλ επαναφέρθηκε από το Shadowdark (Προεπιλογή).",
   "GTWARBANDS.Notification.ProfileActive": "Προφίλ Πολεμικών Μονάδων: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "Το GT-Warbands 0.3.1 έχει σχεδιαστεί προς το παρόν για το Shadowdark.",
+  "GTWARBANDS.Notification.WrongSystem": "Το GT-Warbands έχει σχεδιαστεί προς το παρόν για το Shadowdark.",
   "GTWARBANDS.Error.EmptyFormula": "Ο τύπος δεν μπορεί να είναι κενός.",
   "GTWARBANDS.Error.UnsupportedFormula": "Μη υποστηριζόμενοι χαρακτήρες στον τύπο: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Άγνωστο αναγνωριστικό \"{identifier}\" στον τύπο.",

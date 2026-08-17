@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark（デフォルト）をカスタムへ複製しました。",
   "GTWARBANDS.Notification.Reset": "カスタムプロファイルをShadowdark（デフォルト）からリセットしました。",
   "GTWARBANDS.Notification.ProfileActive": "戦団プロファイル: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 は現在Shadowdark向けに設計されています。",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands は現在Shadowdark向けに設計されています。",
   "GTWARBANDS.Error.EmptyFormula": "式を空にすることはできません。",
   "GTWARBANDS.Error.UnsupportedFormula": "式に未対応の文字が含まれています: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "式に不明な識別子 \"{identifier}\" があります。",

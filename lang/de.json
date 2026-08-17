@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark (Standard) wurde nach Benutzerdefiniert geklont.",
   "GTWARBANDS.Notification.Reset": "Das benutzerdefinierte Profil wurde auf Shadowdark (Standard) zurückgesetzt.",
   "GTWARBANDS.Notification.ProfileActive": "Kriegsverband-Profil: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 ist derzeit für Shadowdark ausgelegt.",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands ist derzeit für Shadowdark ausgelegt.",
   "GTWARBANDS.Error.EmptyFormula": "Die Formel darf nicht leer sein.",
   "GTWARBANDS.Error.UnsupportedFormula": "Nicht unterstützte Zeichen in der Formel: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Unbekannter Bezeichner \"{identifier}\" in der Formel.",

@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark (Varsayılan) Özel profile kopyalandı.",
   "GTWARBANDS.Notification.Reset": "Özel profil Shadowdark'tan (Varsayılan) sıfırlandı.",
   "GTWARBANDS.Notification.ProfileActive": "Savaş Birliği profili: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 şu anda Shadowdark için tasarlanmıştır.",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands şu anda Shadowdark için tasarlanmıştır.",
   "GTWARBANDS.Error.EmptyFormula": "Formül boş bırakılamaz.",
   "GTWARBANDS.Error.UnsupportedFormula": "Formülde desteklenmeyen karakterler var: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Formülde bilinmeyen tanımlayıcı \"{identifier}\" var.",

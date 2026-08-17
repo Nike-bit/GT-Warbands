@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark (padrão) foi clonado para o perfil personalizado.",
   "GTWARBANDS.Notification.Reset": "O perfil personalizado foi redefinido a partir de Shadowdark (padrão).",
   "GTWARBANDS.Notification.ProfileActive": "Perfil de bando de guerra: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 foi desenvolvido atualmente para Shadowdark.",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands foi desenvolvido para Shadowdark.",
   "GTWARBANDS.Error.EmptyFormula": "A fórmula não pode estar vazia.",
   "GTWARBANDS.Error.UnsupportedFormula": "Caracteres não compatíveis na fórmula: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Identificador desconhecido \"{identifier}\" na fórmula.",

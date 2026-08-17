@@ -1,4 +1,4 @@
-# GT-Warbands v0.3.1
+# GT-Warbands v0.4.0
 
 First playable foundation for the profile-driven Warband Actor system developed for Shadowdark.
 
@@ -7,6 +7,22 @@ First playable foundation for the profile-driven Warband Actor system developed 
 - Foundry VTT 14
 - Shadowdark RPG 4.0.x
 - Verified design target: Shadowdark 4.0.6
+
+## Installation
+
+Install GT-Warbands from Foundry VTT's **Add-on Modules** setup screen using this manifest URL:
+
+```text
+https://github.com/Nike-bit/GT-Warbands/releases/latest/download/module.json
+```
+
+For manual installation, download `gt-warbands.zip` from the latest GitHub release and extract its `gt-warbands` folder into Foundry's `Data/modules/` directory.
+
+Versioned releases and release notes are available at:
+
+```text
+https://github.com/Nike-bit/GT-Warbands/releases
+```
 
 The module uses Foundry's module-provided Document subtype system to add:
 
@@ -22,6 +38,19 @@ Included languages:
 
 - English (`en`)
 - Modern Greek / Ελληνικά (`el`)
+- German / Deutsch (`de`)
+- French / Français (`fr`)
+- Spanish / Español (`es`)
+- Brazilian Portuguese / Português (Brasil) (`pt-BR`)
+- Russian / Русский (`ru`)
+- Japanese / 日本語 (`ja`)
+- Simplified Chinese / 简体中文 (`zh-CN`)
+- Polish / Polski (`pl`)
+- Turkish / Türkçe (`tr`)
+- Farsi / فارسی (`fa`)
+- Italian / Italiano (`it`)
+- Latin / Latina (`la`)
+- Ancient Greek / Ἀρχαία Ἑλληνικά (`grc`)
 
 The built-in **Shadowdark (Default)** profile localizes its visible labels per client language while retaining the same generic internal ability IDs and formulas. Custom Profile labels remain world-defined text, as expected for GM-authored content.
 

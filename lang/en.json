@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark (Default) cloned to Custom.",
   "GTWARBANDS.Notification.Reset": "Custom profile reset from Shadowdark (Default).",
   "GTWARBANDS.Notification.ProfileActive": "Warband profile: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 is currently designed for Shadowdark.",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands is currently designed for Shadowdark.",
   "GTWARBANDS.Error.EmptyFormula": "Formula may not be empty.",
   "GTWARBANDS.Error.UnsupportedFormula": "Unsupported characters in formula: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Unknown identifier \"{identifier}\" in formula.",

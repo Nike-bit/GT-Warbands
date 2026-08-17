@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark (پیش‌فرض) در نمایه سفارشی تکثیر شد.",
   "GTWARBANDS.Notification.Reset": "نمایه سفارشی از Shadowdark (پیش‌فرض) بازنشانی شد.",
   "GTWARBANDS.Notification.ProfileActive": "نمایه گروه جنگی: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 در حال حاضر برای Shadowdark طراحی شده است.",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands در حال حاضر برای Shadowdark طراحی شده است.",
   "GTWARBANDS.Error.EmptyFormula": "فرمول نمی‌تواند خالی باشد.",
   "GTWARBANDS.Error.UnsupportedFormula": "نویسه‌های پشتیبانی‌نشده در فرمول: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "شناسه ناشناخته \"{identifier}\" در فرمول.",

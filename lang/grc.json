@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Τὸ Shadowdark (Προκαθορισμένον) εἰς Ἴδιον ἀντεγράφη.",
   "GTWARBANDS.Notification.Reset": "Ὁ Ἴδιος Τύπος ἐκ τοῦ Shadowdark (Προκαθορισμένου) ἀπεκατεστάθη.",
   "GTWARBANDS.Notification.ProfileActive": "Τύπος Στρατεύματος: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "Τὸ GT-Warbands 0.3.1 νῦν πρὸς τὸ Shadowdark πεποίηται.",
+  "GTWARBANDS.Notification.WrongSystem": "Τὸ GT-Warbands νῦν πρὸς τὸ Shadowdark πεποίηται.",
   "GTWARBANDS.Error.EmptyFormula": "Ὁ τύπος κενὸς εἶναι οὐ δύναται.",
   "GTWARBANDS.Error.UnsupportedFormula": "Ἄσημα γράμματα ἐν τῷ τύπῳ: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Ἄγνωστον ὄνομα \"{identifier}\" ἐν τῷ τύπῳ.",

@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark (Praedefinitum) in formam propriam duplicatum est.",
   "GTWARBANDS.Notification.Reset": "Forma propria ex Shadowdark (Praedefinito) restituta est.",
   "GTWARBANDS.Notification.ProfileActive": "Forma Cohortis: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 nunc ad Shadowdark designatum est.",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands nunc ad Shadowdark designatum est.",
   "GTWARBANDS.Error.EmptyFormula": "Formula vacua esse non potest.",
   "GTWARBANDS.Error.UnsupportedFormula": "Notae non sustentae in formula: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Nomen ignotum \"{identifier}\" in formula.",

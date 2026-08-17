@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark (domyślny) sklonowano do profilu niestandardowego.",
   "GTWARBANDS.Notification.Reset": "Profil niestandardowy zresetowano na podstawie Shadowdark (domyślnego).",
   "GTWARBANDS.Notification.ProfileActive": "Profil oddziału bojowego: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 jest obecnie przeznaczony dla Shadowdark.",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands jest obecnie przeznaczony dla Shadowdark.",
   "GTWARBANDS.Error.EmptyFormula": "Formuła nie może być pusta.",
   "GTWARBANDS.Error.UnsupportedFormula": "Nieobsługiwane znaki w formule: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Nieznany identyfikator \"{identifier}\" w formule.",

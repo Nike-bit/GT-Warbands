@@ -124,7 +124,7 @@
   "GTWARBANDS.Notification.Cloned": "Shadowdark (по умолчанию) клонирован в пользовательский профиль.",
   "GTWARBANDS.Notification.Reset": "Пользовательский профиль сброшен на Shadowdark (по умолчанию).",
   "GTWARBANDS.Notification.ProfileActive": "Профиль боевого отряда: {name}",
-  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands 0.3.1 в настоящее время предназначен для Shadowdark.",
+  "GTWARBANDS.Notification.WrongSystem": "GT-Warbands в настоящее время предназначен для Shadowdark.",
   "GTWARBANDS.Error.EmptyFormula": "Формула не может быть пустой.",
   "GTWARBANDS.Error.UnsupportedFormula": "Неподдерживаемые символы в формуле: {formula}",
   "GTWARBANDS.Error.UnknownIdentifier": "Неизвестный идентификатор \"{identifier}\" в формуле.",

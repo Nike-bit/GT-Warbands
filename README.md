@@ -1,4 +1,4 @@
-# GT-Warbands v0.3.0
+# GT-Warbands v0.3.1
 
 First playable foundation for the profile-driven Warband Actor system developed for Shadowdark.
 
@@ -12,6 +12,18 @@ The module uses Foundry's module-provided Document subtype system to add:
 
 - `gt-warbands.warband` Actor
 - `gt-warbands.attack` Item
+
+
+## Localization
+
+GT-Warbands now externalizes its main user-facing interface strings so additional languages can be added without rewriting the rules engine.
+
+Included languages:
+
+- English (`en`)
+- Modern Greek / Ελληνικά (`el`)
+
+The built-in **Shadowdark (Default)** profile localizes its visible labels per client language while retaining the same generic internal ability IDs and formulas. Custom Profile labels remain world-defined text, as expected for GM-authored content.
 
 ## Shadowdark (Default) Profile
 

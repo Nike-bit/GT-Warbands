@@ -3,13 +3,13 @@ const WARBAND_TYPE = `${MODULE_ID}.warband`;
 const ATTACK_TYPE = `${MODULE_ID}.attack`;
 
 const ABILITY_KEYS = ["ability1A", "ability2A", "ability1B", "ability2B", "ability1C", "ability2C"];
-const GENERIC_ABILITY_NAMES = {
-  ability1A: "Ability 1A",
-  ability2A: "Ability 2A",
-  ability1B: "Ability 1B",
-  ability2B: "Ability 2B",
-  ability1C: "Ability 1C",
-  ability2C: "Ability 2C"
+const GENERIC_ABILITY_KEYS = {
+  ability1A: "GTWARBANDS.Generic.Ability1A",
+  ability2A: "GTWARBANDS.Generic.Ability2A",
+  ability1B: "GTWARBANDS.Generic.Ability1B",
+  ability2B: "GTWARBANDS.Generic.Ability2B",
+  ability1C: "GTWARBANDS.Generic.Ability1C",
+  ability2C: "GTWARBANDS.Generic.Ability2C"
 };
 
 const DEFAULT_PROFILE = Object.freeze({
@@ -72,6 +72,46 @@ function clone(obj) { return foundry.utils.deepClone(obj); }
 function isWarband(actor) { return actor?.type === WARBAND_TYPE; }
 function isWarbandAttack(item) { return item?.type === ATTACK_TYPE; }
 function formatBonus(value) { const n = Number(value) || 0; return n >= 0 ? `+${n}` : `${n}`; }
+function L(key) { return game.i18n.localize(key); }
+function F(key, data = {}) { return game.i18n.format(key, data); }
+function genericAbilityName(key) { return L(GENERIC_ABILITY_KEYS[key] ?? key); }
+
+function getLocalizedDefaultProfile() {
+  const p = clone(DEFAULT_PROFILE);
+  p.name = L("GTWARBANDS.Profile.DefaultName");
+  p.labels = {
+    basePower: L("GTWARBANDS.Profile.Labels.BasePower"),
+    power: L("GTWARBANDS.Profile.Labels.Power"),
+    veterancy: L("GTWARBANDS.Profile.Labels.Veterancy"),
+    effectiveness: L("GTWARBANDS.Profile.Labels.Effectiveness"),
+    attack: L("GTWARBANDS.Profile.Labels.Attack"),
+    ac: L("GTWARBANDS.Profile.Labels.AC"),
+    attacks: L("GTWARBANDS.Profile.Labels.Attacks"),
+    damage: L("GTWARBANDS.Profile.Labels.Damage"),
+    dominantAbility: L("GTWARBANDS.Profile.Labels.DominantAbility"),
+    extraDamageDice: L("GTWARBANDS.Profile.Labels.ExtraDamageDice")
+  };
+  p.abilities.ability1A.label = L("GTWARBANDS.Profile.Abilities.Might");
+  p.abilities.ability2A.label = L("GTWARBANDS.Profile.Abilities.Vigor");
+  p.abilities.ability1B.label = L("GTWARBANDS.Profile.Abilities.Maneuver");
+  p.abilities.ability2B.label = L("GTWARBANDS.Profile.Abilities.Cohesion");
+  p.abilities.ability1C.label = L("GTWARBANDS.Profile.Abilities.Magic");
+  p.abilities.ability2C.label = L("GTWARBANDS.Profile.Abilities.Leadership");
+  for (const key of ABILITY_KEYS) p.abilities[key].generic = genericAbilityName(key);
+  p.damage.ability1CProperty.label = L("GTWARBANDS.Profile.Property.Magical");
+  p.damage.ability1CProperty.defenseLabel = L("GTWARBANDS.Profile.Property.NonmagicalDamage");
+  return p;
+}
+
+function stateLabel(state) {
+  const keys = {
+    full: "GTWARBANDS.State.Full",
+    half: "GTWARBANDS.State.Half",
+    quarter: "GTWARBANDS.State.Quarter",
+    broken: "GTWARBANDS.State.Broken"
+  };
+  return L(keys[state] ?? keys.full);
+}
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
@@ -80,10 +120,10 @@ function escapeHtml(value) {
 
 function registerSettings() {
   game.settings.register(MODULE_ID, "activeProfile", {
-    name: "Active Warband Profile", scope: "world", config: false, type: String, default: "shadowdark-default"
+    name: L("GTWARBANDS.Settings.ActiveProfile"), scope: "world", config: false, type: String, default: "shadowdark-default"
   });
   game.settings.register(MODULE_ID, "customProfile", {
-    name: "Custom Warband Profile", scope: "world", config: false, type: Object, default: clone(DEFAULT_PROFILE)
+    name: L("GTWARBANDS.Settings.CustomProfile"), scope: "world", config: false, type: Object, default: clone(DEFAULT_PROFILE)
   });
   game.settings.registerMenu(MODULE_ID, "profileMenu", {
     name: game.i18n.localize("GTWARBANDS.ProfileMenu.Name"),
@@ -102,16 +142,16 @@ function getCustomProfile() {
   });
 }
 function getActiveProfile() {
-  return game.settings.get(MODULE_ID, "activeProfile") === "custom" ? getCustomProfile() : clone(DEFAULT_PROFILE);
+  return game.settings.get(MODULE_ID, "activeProfile") === "custom" ? getCustomProfile() : getLocalizedDefaultProfile();
 }
 
 function validateFormula(formula) {
   const text = String(formula ?? "").trim();
-  if (!text) throw new Error("Formula may not be empty.");
-  if (!/^[0-9A-Za-z_+\-*/%().,\s]+$/.test(text)) throw new Error(`Unsupported characters in formula: ${text}`);
+  if (!text) throw new Error(L("GTWARBANDS.Error.EmptyFormula"));
+  if (!/^[0-9A-Za-z_+\-*/%().,\s]+$/.test(text)) throw new Error(F("GTWARBANDS.Error.UnsupportedFormula", { formula: text }));
   const ids = text.match(/[A-Za-z_][A-Za-z0-9_]*/g) ?? [];
   for (const id of ids) {
-    if (!ALLOWED_VARIABLES.has(id) && !ALLOWED_FUNCTIONS.has(id)) throw new Error(`Unknown identifier "${id}" in formula.`);
+    if (!ALLOWED_VARIABLES.has(id) && !ALLOWED_FUNCTIONS.has(id)) throw new Error(F("GTWARBANDS.Error.UnknownIdentifier", { identifier: id }));
   }
   return text;
 }
@@ -120,7 +160,7 @@ function evaluateFormula(formula, context) {
   const scope = { ...context, floor: Math.floor, ceil: Math.ceil, round: Math.round, min: Math.min, max: Math.max, abs: Math.abs };
   const fn = Function(...Object.keys(scope), `"use strict"; return (${text});`);
   const result = Number(fn(...Object.values(scope)));
-  if (!Number.isFinite(result)) throw new Error(`Formula returned a non-finite number: ${text}`);
+  if (!Number.isFinite(result)) throw new Error(F("GTWARBANDS.Error.NonFiniteFormula", { formula: text }));
   return result;
 }
 
@@ -258,17 +298,17 @@ async function rollEffectiveness(actor) {
 async function rollAbility(actor, key) {
   if (!isWarband(actor) || !ABILITY_KEYS.includes(key)) return;
   const profile = getActiveProfile();
-  const label = profile.abilities[key]?.label ?? GENERIC_ABILITY_NAMES[key];
+  const label = profile.abilities[key]?.label ?? genericAbilityName(key);
   const bonus = Number(actor.system.abilities?.[key] ?? 0);
   const roll = await new Roll(`1d20 + ${bonus}`).evaluate();
-  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: `${actor.name} — ${label} Check (${formatBonus(bonus)})` });
+  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: `${actor.name} — ${label} ${L("GTWARBANDS.Chat.Check")} (${formatBonus(bonus)})` });
 }
 
 async function rollPower(actor) {
   const profile = getActiveProfile();
   const power = deriveWarband(actor, profile).power;
   const roll = await new Roll(`1d20 + ${power}`).evaluate();
-  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: `${actor.name} — ${profile.labels.power} Check (${formatBonus(power)})` });
+  await roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor }), flavor: `${actor.name} — ${profile.labels.power} ${L("GTWARBANDS.Chat.Check")} (${formatBonus(power)})` });
 }
 
 async function evaluateAttackSet(attacker, attack, defender = null) {
@@ -298,19 +338,19 @@ async function evaluateAttackSet(attacker, attack, defender = null) {
 
 function renderAttackSetHtml(data) {
   const profile = getActiveProfile();
-  const target = data.defender ? ` vs ${escapeHtml(data.defender.name)} (AC ${data.targetAC})` : "";
+  const target = data.defender ? ` ${escapeHtml(L("GTWARBANDS.Chat.Versus"))} ${escapeHtml(data.defender.name)} (${escapeHtml(profile.labels.ac)} ${data.targetAC})` : "";
   const prop = data.damage.magical ? `<span class="gt-wb-chat-property">${escapeHtml(data.damage.propertyLabel)}</span>` : "";
   const rows = data.results.map((r, i) => {
-    const hit = r.hit === null ? "" : r.hit ? " — HIT" : " — MISS";
-    const damage = r.hit === false ? "" : ` | Damage ${r.damageRoll?.total ?? 0}${r.defense && r.defense.final !== r.defense.raw ? ` → ${r.defense.final}` : ""}`;
-    return `<li><strong>#${i + 1}</strong> Attack ${r.attackRoll.total}${hit}${damage}</li>`;
+    const hit = r.hit === null ? "" : r.hit ? ` — ${L("GTWARBANDS.Chat.Hit")}` : ` — ${L("GTWARBANDS.Chat.Miss")}`;
+    const damage = r.hit === false ? "" : ` | ${L("GTWARBANDS.Chat.Damage")} ${r.damageRoll?.total ?? 0}${r.defense && r.defense.final !== r.defense.raw ? ` → ${r.defense.final}` : ""}`;
+    return `<li><strong>#${i + 1}</strong> ${escapeHtml(profile.labels.attack)} ${r.attackRoll.total}${hit}${damage}</li>`;
   }).join("");
-  return `<div class="gt-wb-chat-card"><h3>${escapeHtml(data.attacker.name)} — ${escapeHtml(data.attack?.name ?? profile.labels.attack)}${target}</h3><p><strong>${escapeHtml(profile.labels.attack)}:</strong> ${formatBonus(data.derived.attackBonus)} &nbsp; <strong>${escapeHtml(profile.labels.damage)}:</strong> ${escapeHtml(data.damage.formula)} ${prop}</p><ol>${rows}</ol>${data.defender ? `<p><strong>Total Effectiveness Damage:</strong> ${data.totalDamage}</p>` : ""}</div>`;
+  return `<div class="gt-wb-chat-card"><h3>${escapeHtml(data.attacker.name)} — ${escapeHtml(data.attack?.name ?? profile.labels.attack)}${target}</h3><p><strong>${escapeHtml(profile.labels.attack)}:</strong> ${formatBonus(data.derived.attackBonus)} &nbsp; <strong>${escapeHtml(profile.labels.damage)}:</strong> ${escapeHtml(data.damage.formula)} ${prop}</p><ol>${rows}</ol>${data.defender ? `<p><strong>${escapeHtml(L("GTWARBANDS.Chat.TotalEffectivenessDamage"))}:</strong> ${data.totalDamage}</p>` : ""}</div>`;
 }
 
 async function rollAttack(actor, attack) {
   const targets = [...game.user.targets].map(t => t.actor).filter(a => a && isWarband(a) && a.id !== actor.id);
-  if (targets.length > 1) return ui.notifications.warn("Target either one Warband or no Warband before rolling.");
+  if (targets.length > 1) return ui.notifications.warn(L("GTWARBANDS.Notification.TargetZeroOrOne"));
   const data = await evaluateAttackSet(actor, attack, targets[0] ?? null);
   await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor }), content: renderAttackSetHtml(data) });
 }
@@ -318,12 +358,12 @@ async function rollAttack(actor, attack) {
 async function resolveMeleeExchange(attacker) {
   if (!isWarband(attacker)) return;
   const targets = [...game.user.targets].map(t => t.actor).filter(a => a && isWarband(a) && a.id !== attacker.id);
-  if (targets.length !== 1) return ui.notifications.warn("Target exactly one other Warband to resolve a melee exchange.");
+  if (targets.length !== 1) return ui.notifications.warn(L("GTWARBANDS.Notification.TargetExactlyOne"));
   const defender = targets[0];
   const aAttack = getDefaultAttack(attacker, { meleeOnly: true });
   const dAttack = getDefaultAttack(defender, { meleeOnly: true });
-  if (!aAttack) return ui.notifications.warn(`${attacker.name} has no melee Warband Attack.`);
-  if (!dAttack) return ui.notifications.warn(`${defender.name} has no melee Warband Attack.`);
+  if (!aAttack) return ui.notifications.warn(F("GTWARBANDS.Notification.NoMeleeAttack", { name: attacker.name }));
+  if (!dAttack) return ui.notifications.warn(F("GTWARBANDS.Notification.NoMeleeAttack", { name: defender.name }));
 
   // Both complete attack sets are rolled before either Effectiveness value is changed.
   const aResult = await evaluateAttackSet(attacker, aAttack, defender);
@@ -336,7 +376,7 @@ async function resolveMeleeExchange(attacker) {
   await defender.update({ "system.effectiveness.value": dAfter });
 
   const p = getActiveProfile();
-  const content = `<div class="gt-wb-chat-card gt-wb-exchange-card"><h2>Warband Melee Exchange</h2>${renderAttackSetHtml(aResult)}<p><strong>${escapeHtml(defender.name)}:</strong> ${dBefore} → ${dAfter} ${escapeHtml(p.labels.effectiveness)}</p><hr>${renderAttackSetHtml(dResult)}<p><strong>${escapeHtml(attacker.name)}:</strong> ${aBefore} → ${aAfter} ${escapeHtml(p.labels.effectiveness)}</p><p><em>Both sides resolved committed attacks before Effectiveness losses were applied.</em></p></div>`;
+  const content = `<div class="gt-wb-chat-card gt-wb-exchange-card"><h2>${escapeHtml(L("GTWARBANDS.Chat.MeleeExchange"))}</h2>${renderAttackSetHtml(aResult)}<p><strong>${escapeHtml(defender.name)}:</strong> ${dBefore} → ${dAfter} ${escapeHtml(p.labels.effectiveness)}</p><hr>${renderAttackSetHtml(dResult)}<p><strong>${escapeHtml(attacker.name)}:</strong> ${aBefore} → ${aAfter} ${escapeHtml(p.labels.effectiveness)}</p><p><em>${escapeHtml(L("GTWARBANDS.Chat.SimultaneousNote"))}</em></p></div>`;
   await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: attacker }), content });
 }
 
@@ -410,13 +450,13 @@ class WarbandSheet extends ActorSheetV1 {
       ["ability1C", "ability2C"]
     ].map(row => row.map(key => ({
       key,
-      generic: GENERIC_ABILITY_NAMES[key],
-      label: profile.abilities[key]?.label ?? GENERIC_ABILITY_NAMES[key],
+      generic: genericAbilityName(key),
+      label: profile.abilities[key]?.label ?? genericAbilityName(key),
       value: Number(source.abilities?.[key] ?? 0)
     })));
     const dominantOptions = ABILITY_KEYS.map(key => ({
       key,
-      label: profile.abilities[key]?.label ?? GENERIC_ABILITY_NAMES[key],
+      label: profile.abilities[key]?.label ?? genericAbilityName(key),
       selected: source.dominantAbility === key
     }));
     const fallback = getDefaultAttack(this.actor);
@@ -426,17 +466,22 @@ class WarbandSheet extends ActorSheetV1 {
         id: item.id,
         name: item.name,
         range: item.system.range,
+        rangeLabel: L({
+          melee: "GTWARBANDS.Range.Melee",
+          ranged: "GTWARBANDS.Range.Ranged",
+          special: "GTWARBANDS.Range.Special"
+        }[item.system.range] ?? "GTWARBANDS.Range.Special"),
         isDefault: item.id === source.defaultAttackId || (!source.defaultAttackId && item.id === fallback?.id),
         damageFormula: damage.formula,
-        dominantLabel: profile.abilities[damage.dominantKey]?.label ?? GENERIC_ABILITY_NAMES[damage.dominantKey],
+        dominantLabel: profile.abilities[damage.dominantKey]?.label ?? genericAbilityName(damage.dominantKey),
         magical: damage.magical,
         propertyLabel: damage.propertyLabel
       };
     });
     const defenseOptions = [
-      { value: "normal", label: "Normal", selected: source.defenses.ability1CProperty === "normal" },
-      { value: "resistant", label: "Resistant", selected: source.defenses.ability1CProperty === "resistant" },
-      { value: "immune", label: "Immune", selected: source.defenses.ability1CProperty === "immune" }
+      { value: "normal", label: L("GTWARBANDS.Defense.Normal"), selected: source.defenses.ability1CProperty === "normal" },
+      { value: "resistant", label: L("GTWARBANDS.Defense.Resistant"), selected: source.defenses.ability1CProperty === "resistant" },
+      { value: "immune", label: L("GTWARBANDS.Defense.Immune"), selected: source.defenses.ability1CProperty === "immune" }
     ];
     return {
       ...context,
@@ -449,7 +494,8 @@ class WarbandSheet extends ActorSheetV1 {
       attacks,
       defenseOptions,
       staleEffectiveness,
-      currentDamage: deriveDamage(this.actor, null, profile)
+      currentDamage: deriveDamage(this.actor, null, profile),
+      stateLabel: stateLabel(derived.state)
     };
   }
 
@@ -460,7 +506,7 @@ class WarbandSheet extends ActorSheetV1 {
     html.find("[data-action='roll-ability']").on("click", async e => { e.preventDefault(); await rollAbility(this.actor, e.currentTarget.dataset.ability); });
     html.find("[data-action='create-attack']").on("click", async e => {
       e.preventDefault();
-      const [item] = await this.actor.createEmbeddedDocuments("Item", [{ name: "Warband Attack", type: ATTACK_TYPE }]);
+      const [item] = await this.actor.createEmbeddedDocuments("Item", [{ name: L("GTWARBANDS.AttackSheet.AttackName"), type: ATTACK_TYPE }]);
       item?.sheet?.render(true);
     });
     html.find("[data-action='edit-attack']").on("click", e => {
@@ -507,17 +553,17 @@ class WarbandAttackSheet extends ItemSheetV1 {
     const profile = getActiveProfile();
     const actor = this.item.parent?.documentName === "Actor" && isWarband(this.item.parent) ? this.item.parent : null;
     const dominantOptions = [
-      { key: "actor", label: "Use Warband Default", selected: this.item.system.dominantAbility === "actor" },
+      { key: "actor", label: L("GTWARBANDS.AttackSheet.UseDefault"), selected: this.item.system.dominantAbility === "actor" },
       ...ABILITY_KEYS.map(key => ({
         key,
-        label: `${profile.abilities[key]?.label ?? GENERIC_ABILITY_NAMES[key]} (${GENERIC_ABILITY_NAMES[key]})`,
+        label: `${profile.abilities[key]?.label ?? genericAbilityName(key)} (${genericAbilityName(key)})`,
         selected: this.item.system.dominantAbility === key
       }))
     ];
     const rangeOptions = [
-      { value: "melee", label: "Melee", selected: this.item.system.range === "melee" },
-      { value: "ranged", label: "Ranged", selected: this.item.system.range === "ranged" },
-      { value: "special", label: "Special", selected: this.item.system.range === "special" }
+      { value: "melee", label: L("GTWARBANDS.Range.Melee"), selected: this.item.system.range === "melee" },
+      { value: "ranged", label: L("GTWARBANDS.Range.Ranged"), selected: this.item.system.range === "ranged" },
+      { value: "special", label: L("GTWARBANDS.Range.Special"), selected: this.item.system.range === "special" }
     ];
     return {
       ...context,
@@ -536,7 +582,7 @@ class WarbandProfileConfig extends FormApplicationV1 {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "gt-warbands-profile-config",
-      title: "GT-Warbands — Profiles",
+      title: L("GTWARBANDS.ProfileConfig.Title"),
       template: `modules/${MODULE_ID}/templates/apps/profile-config.hbs`,
       width: 760,
       height: 820,
@@ -553,24 +599,24 @@ class WarbandProfileConfig extends FormApplicationV1 {
     return {
       ...context,
       profiles: [
-        { value: "shadowdark-default", label: "Shadowdark (Default)", selected: activeProfile !== "custom" },
-        { value: "custom", label: custom.name || "Custom", selected: activeProfile === "custom" }
+        { value: "shadowdark-default", label: L("GTWARBANDS.Profile.DefaultName"), selected: activeProfile !== "custom" },
+        { value: "custom", label: custom.name || L("GTWARBANDS.Profile.CustomName"), selected: activeProfile === "custom" }
       ],
       custom,
       qualityLabelRows: [
-        ["basePower", "Base Quality"], ["power", "Derived Quality"], ["veterancy", "Experience Quality"],
-        ["effectiveness", "Durability Resource"], ["attack", "Attack Statistic"], ["ac", "Defense Statistic"],
-        ["attacks", "Attack Count"], ["damage", "Damage"], ["dominantAbility", "Dominant Ability"],
-        ["extraDamageDice", "Extra Damage Dice"]
-      ].map(([key, generic]) => ({ key, generic, label: custom.labels[key] ?? generic })),
-      abilityRows: ABILITY_KEYS.map(key => ({ key, generic: GENERIC_ABILITY_NAMES[key], label: custom.abilities[key]?.label ?? GENERIC_ABILITY_NAMES[key] })),
+        ["basePower", "GTWARBANDS.Quality.Base"], ["power", "GTWARBANDS.Quality.Derived"], ["veterancy", "GTWARBANDS.Quality.Experience"],
+        ["effectiveness", "GTWARBANDS.Quality.Durability"], ["attack", "GTWARBANDS.Quality.Attack"], ["ac", "GTWARBANDS.Quality.Defense"],
+        ["attacks", "GTWARBANDS.Quality.AttackCount"], ["damage", "GTWARBANDS.Quality.Damage"], ["dominantAbility", "GTWARBANDS.Quality.DominantAbility"],
+        ["extraDamageDice", "GTWARBANDS.Quality.ExtraDamageDice"]
+      ].map(([key, genericKey]) => ({ key, generic: L(genericKey), label: custom.labels[key] ?? L(genericKey) })),
+      abilityRows: ABILITY_KEYS.map(key => ({ key, generic: genericAbilityName(key), label: custom.abilities[key]?.label ?? genericAbilityName(key) })),
       formulaRows: [
-        ["power", "Power"], ["effectivenessDice", "Effectiveness Dice"], ["attackBonus", "Attack Bonus"], ["ac", "AC"],
-        ["attacks", "Number of Attacks"], ["baseDamageDice", "Base Damage Dice"], ["extraDamageDice", "Additional Damage Dice"], ["flatDamage", "Flat Damage"]
-      ].map(([key, label]) => ({ key, label, value: custom.formulas[key] })),
+        ["power", "GTWARBANDS.Formula.Power"], ["effectivenessDice", "GTWARBANDS.Formula.EffectivenessDice"], ["attackBonus", "GTWARBANDS.Formula.AttackBonus"], ["ac", "GTWARBANDS.Formula.AC"],
+        ["attacks", "GTWARBANDS.Formula.Attacks"], ["baseDamageDice", "GTWARBANDS.Formula.BaseDamageDice"], ["extraDamageDice", "GTWARBANDS.Formula.AdditionalDamageDice"], ["flatDamage", "GTWARBANDS.Formula.FlatDamage"]
+      ].map(([key, labelKey]) => ({ key, label: L(labelKey), value: custom.formulas[key] })),
       propertyAbilityOptions: ABILITY_KEYS.map(key => ({
         key,
-        label: `${GENERIC_ABILITY_NAMES[key]} — ${custom.abilities[key]?.label ?? GENERIC_ABILITY_NAMES[key]}`,
+        label: `${genericAbilityName(key)} — ${custom.abilities[key]?.label ?? genericAbilityName(key)}`,
         selected: custom.damage.ability1CProperty.abilityKey === key
       }))
     };
@@ -580,21 +626,21 @@ class WarbandProfileConfig extends FormApplicationV1 {
     super.activateListeners(html);
     html.find("[data-action='clone-default']").on("click", async e => {
       e.preventDefault();
-      const profile = clone(DEFAULT_PROFILE);
+      const profile = getLocalizedDefaultProfile();
       profile.id = "custom";
-      profile.name = "Custom";
+      profile.name = L("GTWARBANDS.Profile.CustomName");
       await game.settings.set(MODULE_ID, "customProfile", profile);
       await game.settings.set(MODULE_ID, "activeProfile", "custom");
-      ui.notifications.info("Shadowdark (Default) cloned to Custom.");
+      ui.notifications.info(L("GTWARBANDS.Notification.Cloned"));
       this.render(false);
     });
     html.find("[data-action='reset-custom']").on("click", async e => {
       e.preventDefault();
-      const profile = clone(DEFAULT_PROFILE);
+      const profile = getLocalizedDefaultProfile();
       profile.id = "custom";
-      profile.name = "Custom";
+      profile.name = L("GTWARBANDS.Profile.CustomName");
       await game.settings.set(MODULE_ID, "customProfile", profile);
-      ui.notifications.info("Custom profile reset from Shadowdark (Default).");
+      ui.notifications.info(L("GTWARBANDS.Notification.Reset"));
       this.render(false);
     });
   }
@@ -607,13 +653,13 @@ class WarbandProfileConfig extends FormApplicationV1 {
     if (active === "custom") {
       const p = getCustomProfile();
       p.id = "custom";
-      p.name = String(data.custom?.name ?? "Custom").trim() || "Custom";
+      p.name = String(data.custom?.name ?? L("GTWARBANDS.Profile.CustomName")).trim() || L("GTWARBANDS.Profile.CustomName");
       for (const key of Object.keys(p.labels)) {
         p.labels[key] = String(data.custom?.labels?.[key] ?? p.labels[key]).trim() || p.labels[key];
       }
       for (const key of ABILITY_KEYS) {
-        p.abilities[key].generic = GENERIC_ABILITY_NAMES[key];
-        p.abilities[key].label = String(data.custom?.abilities?.[key]?.label ?? GENERIC_ABILITY_NAMES[key]).trim() || GENERIC_ABILITY_NAMES[key];
+        p.abilities[key].generic = genericAbilityName(key);
+        p.abilities[key].label = String(data.custom?.abilities?.[key]?.label ?? genericAbilityName(key)).trim() || genericAbilityName(key);
       }
       for (const key of Object.keys(p.formulas)) {
         p.formulas[key] = validateFormula(String(data.custom?.formulas?.[key] ?? p.formulas[key]).trim());
@@ -621,7 +667,7 @@ class WarbandProfileConfig extends FormApplicationV1 {
       p.effectiveness.dieFaces = Math.max(2, Math.floor(Number(data.custom?.effectiveness?.dieFaces ?? p.effectiveness.dieFaces)));
       const full = Number(data.custom?.effectiveness?.bands?.full);
       const half = Number(data.custom?.effectiveness?.bands?.half);
-      if (!(full > half && full < 1 && half >= 0)) throw new Error("Effectiveness thresholds must satisfy 1 > Full > Half ≥ 0.");
+      if (!(full > half && full < 1 && half >= 0)) throw new Error(L("GTWARBANDS.Error.BadThresholds"));
       p.effectiveness.bands.full = full;
       p.effectiveness.bands.half = half;
       p.damage.mightCap = Math.max(0, Math.floor(Number(data.custom?.damage?.mightCap ?? p.damage.mightCap)));
@@ -647,7 +693,7 @@ class WarbandProfileConfig extends FormApplicationV1 {
     }
 
     for (const actor of game.actors.filter(isWarband)) actor.sheet?.render(false);
-    ui.notifications.info(`Warband profile: ${getActiveProfile().name}`);
+    ui.notifications.info(F("GTWARBANDS.Notification.ProfileActive", { name: getActiveProfile().name }));
     this.render(false);
   }
 }
@@ -658,7 +704,7 @@ Hooks.once("init", () => {
   Object.assign(CONFIG.Item.dataModels, { [ATTACK_TYPE]: WarbandAttackModel });
   const DSC = foundry.applications.apps.DocumentSheetConfig;
   DSC.registerSheet(foundry.documents.Actor, MODULE_ID, WarbandSheet, { types: [WARBAND_TYPE], makeDefault: true, label: "GT-Warbands" });
-  DSC.registerSheet(foundry.documents.Item, MODULE_ID, WarbandAttackSheet, { types: [ATTACK_TYPE], makeDefault: true, label: "GT-Warbands Attack" });
+  DSC.registerSheet(foundry.documents.Item, MODULE_ID, WarbandAttackSheet, { types: [ATTACK_TYPE], makeDefault: true, label: L("TYPES.Item.gt-warbands.attack") });
   console.log(`${MODULE_ID} | Registered Warband Actor and Attack subtypes.`);
 });
 
@@ -668,6 +714,6 @@ Hooks.once("ready", () => {
     WARBAND_TYPE, ATTACK_TYPE, DEFAULT_PROFILE, getActiveProfile, deriveWarband, deriveDamage,
     rollEffectiveness, rollAttack, resolveMeleeExchange, applyPropertyDefense
   };
-  if (game.system.id !== "shadowdark") ui.notifications.warn("GT-Warbands 0.3.0 is currently designed for Shadowdark.");
+  if (game.system.id !== "shadowdark") ui.notifications.warn(L("GTWARBANDS.Notification.WrongSystem"));
   console.log(`${MODULE_ID} | Ready — ${getActiveProfile().name}`);
 });

@@ -2,7 +2,7 @@
   <header class="gt-wb-header">
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}">
     <div class="gt-wb-title-block">
-      <input class="gt-wb-name" name="name" type="text" value="{{actor.name}}" placeholder="Warband Name">
+      <input class="gt-wb-name" name="name" type="text" value="{{actor.name}}" placeholder="{{localize "TYPES.Actor.gt-warbands.warband"}}">
       <div class="gt-wb-profile-label">{{profile.name}}</div>
     </div>
   </header>
@@ -10,7 +10,7 @@
   <section class="gt-wb-top-grid">
     <div class="gt-wb-panel">
       <div class="gt-wb-panel-title">{{profile.labels.power}}</div>
-      <a class="gt-wb-derived-big" data-action="roll-power" title="Roll Power check">{{derived.power}}</a>
+      <a class="gt-wb-derived-big" data-action="roll-power" title="{{profile.labels.power}}">{{derived.power}}</a>
       <div class="gt-wb-pair-fields">
         <label><span>{{profile.labels.basePower}}</span><input name="system.basePower" type="number" min="0" step="1" value="{{system.basePower}}"></label>
         <label><span>{{profile.labels.veterancy}}</span><input name="system.veterancy" type="number" min="0" step="1" value="{{system.veterancy}}"></label>
@@ -23,12 +23,12 @@
         <input name="system.effectiveness.value" type="number" min="0" step="1" value="{{system.effectiveness.value}}">
         <span>/</span><strong>{{system.effectiveness.max}}</strong>
       </div>
-      <div class="gt-wb-state gt-wb-state-{{derived.state}}">{{derived.state}}</div>
+      <div class="gt-wb-state gt-wb-state-{{derived.state}}">{{stateLabel}}</div>
       <div class="gt-wb-effectiveness-formula">
-        Formula: <strong>{{derived.effectivenessFormula}}</strong>
-        {{#if staleEffectiveness}}<span class="gt-wb-warning">stats changed</span>{{/if}}
+        {{localize "GTWARBANDS.Sheet.Formula"}}: <strong>{{derived.effectivenessFormula}}</strong>
+        {{#if staleEffectiveness}}<span class="gt-wb-warning">{{localize "GTWARBANDS.Sheet.StatsChanged"}}</span>{{/if}}
       </div>
-      <button type="button" data-action="roll-effectiveness"><i class="fas fa-dice"></i> Roll Effectiveness</button>
+      <button type="button" data-action="roll-effectiveness"><i class="fas fa-dice"></i> {{localize "GTWARBANDS.Sheet.RollEffectiveness"}}</button>
     </div>
   </section>
 
@@ -40,7 +40,7 @@
   </section>
 
   <section class="gt-wb-section">
-    <div class="gt-wb-section-title">ABILITIES</div>
+    <div class="gt-wb-section-title">{{localize "GTWARBANDS.Sheet.Abilities"}}</div>
     {{#each abilityRows as |row|}}
     <div class="gt-wb-ability-row">
       {{#each row as |ability|}}
@@ -57,7 +57,7 @@
   </section>
 
   <section class="gt-wb-section gt-wb-damage-config">
-    <div class="gt-wb-section-title">DAMAGE FRAMEWORK</div>
+    <div class="gt-wb-section-title">{{localize "GTWARBANDS.Sheet.DamageFramework"}}</div>
     <div class="gt-wb-config-grid">
       <label>
         <span>{{profile.labels.dominantAbility}}</span>
@@ -66,7 +66,7 @@
         </select>
       </label>
       <label>
-        <span>{{profile.labels.extraDamageDice}} (Size / Effects)</span>
+        <span>{{profile.labels.extraDamageDice}} ({{localize "GTWARBANDS.Sheet.SizeEffects"}})</span>
         <input name="system.modifiers.extraDamageDice" type="number" step="1" value="{{system.modifiers.extraDamageDice}}">
       </label>
       <label>
@@ -76,34 +76,34 @@
         </select>
       </label>
     </div>
-    <p class="notes">Damage dice come from the Dominant Ability plus Size/effect dice. Might determines die size; Might above the profile cap adds dice. Ability 1C supplies flat damage and can grant a profile-defined attack property.</p>
+    <p class="notes">{{localize "GTWARBANDS.Sheet.DamageFrameworkHint"}}</p>
   </section>
 
   <section class="gt-wb-section">
     <div class="gt-wb-section-header">
-      <div class="gt-wb-section-title">ATTACKS</div>
+      <div class="gt-wb-section-title">{{localize "GTWARBANDS.Sheet.Attacks"}}</div>
       <div>
-        <button type="button" data-action="melee-exchange" class="gt-wb-compact-button"><i class="fas fa-swords"></i> Melee Exchange</button>
-        <button type="button" data-action="create-attack" class="gt-wb-compact-button"><i class="fas fa-plus"></i> Add Attack</button>
+        <button type="button" data-action="melee-exchange" class="gt-wb-compact-button"><i class="fas fa-swords"></i> {{localize "GTWARBANDS.Sheet.MeleeExchange"}}</button>
+        <button type="button" data-action="create-attack" class="gt-wb-compact-button"><i class="fas fa-plus"></i> {{localize "GTWARBANDS.Sheet.AddAttack"}}</button>
       </div>
     </div>
     <div class="item-list gt-wb-attack-list">
       {{#each attacks as |attack|}}
       <div class="item gt-wb-attack-row" data-item-id="{{attack.id}}">
-        <a data-action="set-default-attack" title="Set as default attack" class="gt-wb-star"><i class="{{#if attack.isDefault}}fas{{else}}far{{/if}} fa-star"></i></a>
+        <a data-action="set-default-attack" title="{{localize "GTWARBANDS.Sheet.SetDefaultAttack"}}" class="gt-wb-star"><i class="{{#if attack.isDefault}}fas{{else}}far{{/if}} fa-star"></i></a>
         <a data-action="roll-attack" class="gt-wb-attack-main">
-          <strong>{{attack.name}}</strong><span>{{attack.range}}</span><span>{{attack.dominantLabel}}</span><span>{{attack.damageFormula}}</span>{{#if attack.magical}}<small>{{attack.propertyLabel}}</small>{{/if}}
+          <strong>{{attack.name}}</strong><span>{{attack.rangeLabel}}</span><span>{{attack.dominantLabel}}</span><span>{{attack.damageFormula}}</span>{{#if attack.magical}}<small>{{attack.propertyLabel}}</small>{{/if}}
         </a>
-        <a data-action="edit-attack" title="Edit"><i class="fas fa-edit"></i></a>
-        <a data-action="delete-attack" title="Delete"><i class="fas fa-trash"></i></a>
+        <a data-action="edit-attack" title="{{localize "GTWARBANDS.Sheet.Edit"}}"><i class="fas fa-edit"></i></a>
+        <a data-action="delete-attack" title="{{localize "GTWARBANDS.Sheet.Delete"}}"><i class="fas fa-trash"></i></a>
       </div>
-      {{else}}<div class="gt-wb-empty">No Warband Attacks yet.</div>{{/each}}
+      {{else}}<div class="gt-wb-empty">{{localize "GTWARBANDS.Sheet.NoAttacks"}}</div>{{/each}}
     </div>
-    <p class="notes">Target one Warband and click an attack to preview its attack set. Melee Exchange resolves both Warbands' default melee attacks simultaneously and applies Effectiveness damage. Ranged exchange rules are not automated yet.</p>
+    <p class="notes">{{localize "GTWARBANDS.Sheet.AttacksHint"}}</p>
   </section>
 
   <section class="gt-wb-section">
-    <div class="gt-wb-section-title">NOTES</div>
-    <textarea name="system.notes" rows="6" placeholder="Traits, formations, morale notes, special rules...">{{system.notes}}</textarea>
+    <div class="gt-wb-section-title">{{localize "GTWARBANDS.Sheet.Notes"}}</div>
+    <textarea name="system.notes" rows="6" placeholder="{{localize "GTWARBANDS.Sheet.NotesPlaceholder"}}">{{system.notes}}</textarea>
   </section>
 </form>

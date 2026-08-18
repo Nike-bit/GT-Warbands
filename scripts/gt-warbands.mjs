@@ -1,3 +1,5 @@
+import { registerSkirmishHooks, registerSkirmishSettings } from "./skirmish.mjs";
+
 const MODULE_ID = "gt-warbands";
 const WARBAND_TYPE = `${MODULE_ID}.warband`;
 const ATTACK_TYPE = `${MODULE_ID}.attack`;
@@ -700,6 +702,8 @@ class WarbandProfileConfig extends FormApplicationV1 {
 
 Hooks.once("init", () => {
   registerSettings();
+  registerSkirmishSettings();
+  registerSkirmishHooks();
   Object.assign(CONFIG.Actor.dataModels, { [WARBAND_TYPE]: WarbandModel });
   Object.assign(CONFIG.Item.dataModels, { [ATTACK_TYPE]: WarbandAttackModel });
   const DSC = foundry.applications.apps.DocumentSheetConfig;

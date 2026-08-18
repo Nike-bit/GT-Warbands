@@ -2,7 +2,7 @@
   <header class="gt-wb-header">
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}">
     <div class="gt-wb-title-block">
-      <input class="gt-wb-name" name="name" type="text" value="{{actor.name}}" placeholder="{{localize "TYPES.Actor.gt-warbands.warband"}}">
+      <input class="gt-wb-name" name="name" type="text" value="{{actor.name}}" placeholder="{{gtwLocalize "TYPES.Actor.gt-warbands.warband"}}">
       <div class="gt-wb-profile-label">{{profile.name}}</div>
     </div>
   </header>
@@ -25,10 +25,10 @@
       </div>
       <div class="gt-wb-state gt-wb-state-{{derived.state}}">{{stateLabel}}</div>
       <div class="gt-wb-effectiveness-formula">
-        {{localize "GTWARBANDS.Sheet.Formula"}}: <strong>{{derived.effectivenessFormula}}</strong>
-        {{#if staleEffectiveness}}<span class="gt-wb-warning">{{localize "GTWARBANDS.Sheet.StatsChanged"}}</span>{{/if}}
+        {{gtwLocalize "GTWARBANDS.Sheet.Formula"}}: <strong>{{derived.effectivenessFormula}}</strong>
+        {{#if staleEffectiveness}}<span class="gt-wb-warning">{{gtwLocalize "GTWARBANDS.Sheet.StatsChanged"}}</span>{{/if}}
       </div>
-      <button type="button" data-action="roll-effectiveness"><i class="fas fa-dice"></i> {{localize "GTWARBANDS.Sheet.RollEffectiveness"}}</button>
+      <button type="button" data-action="roll-effectiveness"><i class="fas fa-dice"></i> {{gtwLocalize "GTWARBANDS.Sheet.RollEffectiveness"}}</button>
     </div>
   </section>
 
@@ -40,7 +40,7 @@
   </section>
 
   <section class="gt-wb-section">
-    <div class="gt-wb-section-title">{{localize "GTWARBANDS.Sheet.Abilities"}}</div>
+    <div class="gt-wb-section-title">{{gtwLocalize "GTWARBANDS.Sheet.Abilities"}}</div>
     {{#each abilityRows as |row|}}
     <div class="gt-wb-ability-row">
       {{#each row as |ability|}}
@@ -57,7 +57,7 @@
   </section>
 
   <section class="gt-wb-section gt-wb-damage-config">
-    <div class="gt-wb-section-title">{{localize "GTWARBANDS.Sheet.DamageFramework"}}</div>
+    <div class="gt-wb-section-title">{{gtwLocalize "GTWARBANDS.Sheet.DamageFramework"}}</div>
     <div class="gt-wb-config-grid">
       <label>
         <span>{{profile.labels.dominantAbility}}</span>
@@ -66,7 +66,7 @@
         </select>
       </label>
       <label>
-        <span>{{profile.labels.extraDamageDice}} ({{localize "GTWARBANDS.Sheet.SizeEffects"}})</span>
+        <span>{{profile.labels.extraDamageDice}} ({{gtwLocalize "GTWARBANDS.Sheet.SizeEffects"}})</span>
         <input name="system.modifiers.extraDamageDice" type="number" step="1" value="{{system.modifiers.extraDamageDice}}">
       </label>
       <label>
@@ -76,34 +76,34 @@
         </select>
       </label>
     </div>
-    <p class="notes">{{localize "GTWARBANDS.Sheet.DamageFrameworkHint"}}</p>
+    <p class="notes">{{gtwLocalize "GTWARBANDS.Sheet.DamageFrameworkHint"}}</p>
   </section>
 
   <section class="gt-wb-section">
     <div class="gt-wb-section-header">
-      <div class="gt-wb-section-title">{{localize "GTWARBANDS.Sheet.Attacks"}}</div>
+      <div class="gt-wb-section-title">{{gtwLocalize "GTWARBANDS.Sheet.Attacks"}}</div>
       <div>
-        <button type="button" data-action="melee-exchange" class="gt-wb-compact-button"><i class="fas fa-swords"></i> {{localize "GTWARBANDS.Sheet.MeleeExchange"}}</button>
-        <button type="button" data-action="create-attack" class="gt-wb-compact-button"><i class="fas fa-plus"></i> {{localize "GTWARBANDS.Sheet.AddAttack"}}</button>
+        <button type="button" data-action="melee-exchange" class="gt-wb-compact-button"><i class="fas fa-swords"></i> {{gtwLocalize "GTWARBANDS.Sheet.MeleeExchange"}}</button>
+        <button type="button" data-action="create-attack" class="gt-wb-compact-button"><i class="fas fa-plus"></i> {{gtwLocalize "GTWARBANDS.Sheet.AddAttack"}}</button>
       </div>
     </div>
     <div class="item-list gt-wb-attack-list">
       {{#each attacks as |attack|}}
       <div class="item gt-wb-attack-row" data-item-id="{{attack.id}}">
-        <a data-action="set-default-attack" title="{{localize "GTWARBANDS.Sheet.SetDefaultAttack"}}" class="gt-wb-star"><i class="{{#if attack.isDefault}}fas{{else}}far{{/if}} fa-star"></i></a>
+        <a data-action="set-default-attack" title="{{gtwLocalize "GTWARBANDS.Sheet.SetDefaultAttack"}}" class="gt-wb-star"><i class="{{#if attack.isDefault}}fas{{else}}far{{/if}} fa-star"></i></a>
         <a data-action="roll-attack" class="gt-wb-attack-main">
           <strong>{{attack.name}}</strong><span>{{attack.rangeLabel}}</span><span>{{attack.dominantLabel}}</span><span>{{attack.damageFormula}}</span>{{#if attack.magical}}<small>{{attack.propertyLabel}}</small>{{/if}}
         </a>
-        <a data-action="edit-attack" title="{{localize "GTWARBANDS.Sheet.Edit"}}"><i class="fas fa-edit"></i></a>
-        <a data-action="delete-attack" title="{{localize "GTWARBANDS.Sheet.Delete"}}"><i class="fas fa-trash"></i></a>
+        <a data-action="edit-attack" title="{{gtwLocalize "GTWARBANDS.Sheet.Edit"}}"><i class="fas fa-edit"></i></a>
+        <a data-action="delete-attack" title="{{gtwLocalize "GTWARBANDS.Sheet.Delete"}}"><i class="fas fa-trash"></i></a>
       </div>
-      {{else}}<div class="gt-wb-empty">{{localize "GTWARBANDS.Sheet.NoAttacks"}}</div>{{/each}}
+      {{else}}<div class="gt-wb-empty">{{gtwLocalize "GTWARBANDS.Sheet.NoAttacks"}}</div>{{/each}}
     </div>
-    <p class="notes">{{localize "GTWARBANDS.Sheet.AttacksHint"}}</p>
+    <p class="notes">{{gtwLocalize "GTWARBANDS.Sheet.AttacksHint"}}</p>
   </section>
 
   <section class="gt-wb-section">
-    <div class="gt-wb-section-title">{{localize "GTWARBANDS.Sheet.Notes"}}</div>
-    <textarea name="system.notes" rows="6" placeholder="{{localize "GTWARBANDS.Sheet.NotesPlaceholder"}}">{{system.notes}}</textarea>
+    <div class="gt-wb-section-title">{{gtwLocalize "GTWARBANDS.Sheet.Notes"}}</div>
+    <textarea name="system.notes" rows="6" placeholder="{{gtwLocalize "GTWARBANDS.Sheet.NotesPlaceholder"}}">{{system.notes}}</textarea>
   </section>
 </form>

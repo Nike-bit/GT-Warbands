@@ -1,4 +1,11 @@
 import { registerSkirmishHooks, registerSkirmishSettings } from "./skirmish.mjs";
+import {
+  activateLanguage,
+  format as formatGtw,
+  getLocalizationApi,
+  localize as localizeGtw,
+  registerLocalization
+} from "./localization.mjs";
 
 const MODULE_ID = "gt-warbands";
 const WARBAND_TYPE = `${MODULE_ID}.warband`;
@@ -74,8 +81,8 @@ function clone(obj) { return foundry.utils.deepClone(obj); }
 function isWarband(actor) { return actor?.type === WARBAND_TYPE; }
 function isWarbandAttack(item) { return item?.type === ATTACK_TYPE; }
 function formatBonus(value) { const n = Number(value) || 0; return n >= 0 ? `+${n}` : `${n}`; }
-function L(key) { return game.i18n.localize(key); }
-function F(key, data = {}) { return game.i18n.format(key, data); }
+function L(key) { return localizeGtw(key); }
+function F(key, data = {}) { return formatGtw(key, data); }
 function genericAbilityName(key) { return L(GENERIC_ABILITY_KEYS[key] ?? key); }
 
 function getLocalizedDefaultProfile() {
@@ -120,6 +127,29 @@ function escapeHtml(value) {
   })[ch]);
 }
 
+function localizedChatText(key) {
+  return `<span data-gtw-localize="${escapeHtml(key)}">${escapeHtml(L(key))}</span>`;
+}
+
+function chatProfileLabel(profile, label) {
+  if (profile.id !== DEFAULT_PROFILE.id) return escapeHtml(profile.labels[label]);
+  const keys = {
+    attack: "GTWARBANDS.Profile.Labels.Attack",
+    ac: "GTWARBANDS.Profile.Labels.AC",
+    damage: "GTWARBANDS.Profile.Labels.Damage",
+    effectiveness: "GTWARBANDS.Profile.Labels.Effectiveness"
+  };
+  return localizedChatText(keys[label]);
+}
+
+function chatPropertyLabel(profile, damage) {
+  if (!damage.magical) return "";
+  const label = profile.id === DEFAULT_PROFILE.id
+    ? localizedChatText("GTWARBANDS.Profile.Property.Magical")
+    : escapeHtml(damage.propertyLabel);
+  return `<span class="gt-wb-chat-property">${label}</span>`;
+}
+
 function registerSettings() {
   game.settings.register(MODULE_ID, "activeProfile", {
     name: L("GTWARBANDS.Settings.ActiveProfile"), scope: "world", config: false, type: String, default: "shadowdark-default"
@@ -128,9 +158,9 @@ function registerSettings() {
     name: L("GTWARBANDS.Settings.CustomProfile"), scope: "world", config: false, type: Object, default: clone(DEFAULT_PROFILE)
   });
   game.settings.registerMenu(MODULE_ID, "profileMenu", {
-    name: game.i18n.localize("GTWARBANDS.ProfileMenu.Name"),
-    label: game.i18n.localize("GTWARBANDS.ProfileMenu.Label"),
-    hint: game.i18n.localize("GTWARBANDS.ProfileMenu.Hint"),
+    name: L("GTWARBANDS.ProfileMenu.Name"),
+    label: L("GTWARBANDS.ProfileMenu.Label"),
+    hint: L("GTWARBANDS.ProfileMenu.Hint"),
     icon: "fas fa-users-gear",
     type: WarbandProfileConfig,
     restricted: true
@@ -340,14 +370,14 @@ async function evaluateAttackSet(attacker, attack, defender = null) {
 
 function renderAttackSetHtml(data) {
   const profile = getActiveProfile();
-  const target = data.defender ? ` ${escapeHtml(L("GTWARBANDS.Chat.Versus"))} ${escapeHtml(data.defender.name)} (${escapeHtml(profile.labels.ac)} ${data.targetAC})` : "";
-  const prop = data.damage.magical ? `<span class="gt-wb-chat-property">${escapeHtml(data.damage.propertyLabel)}</span>` : "";
+  const target = data.defender ? ` ${localizedChatText("GTWARBANDS.Chat.Versus")} ${escapeHtml(data.defender.name)} (${chatProfileLabel(profile, "ac")} ${data.targetAC})` : "";
+  const prop = chatPropertyLabel(profile, data.damage);
   const rows = data.results.map((r, i) => {
-    const hit = r.hit === null ? "" : r.hit ? ` — ${L("GTWARBANDS.Chat.Hit")}` : ` — ${L("GTWARBANDS.Chat.Miss")}`;
-    const damage = r.hit === false ? "" : ` | ${L("GTWARBANDS.Chat.Damage")} ${r.damageRoll?.total ?? 0}${r.defense && r.defense.final !== r.defense.raw ? ` → ${r.defense.final}` : ""}`;
-    return `<li><strong>#${i + 1}</strong> ${escapeHtml(profile.labels.attack)} ${r.attackRoll.total}${hit}${damage}</li>`;
+    const hit = r.hit === null ? "" : r.hit ? ` — ${localizedChatText("GTWARBANDS.Chat.Hit")}` : ` — ${localizedChatText("GTWARBANDS.Chat.Miss")}`;
+    const damage = r.hit === false ? "" : ` | ${localizedChatText("GTWARBANDS.Chat.Damage")} ${r.damageRoll?.total ?? 0}${r.defense && r.defense.final !== r.defense.raw ? ` → ${r.defense.final}` : ""}`;
+    return `<li><strong>#${i + 1}</strong> ${chatProfileLabel(profile, "attack")} ${r.attackRoll.total}${hit}${damage}</li>`;
   }).join("");
-  return `<div class="gt-wb-chat-card"><h3>${escapeHtml(data.attacker.name)} — ${escapeHtml(data.attack?.name ?? profile.labels.attack)}${target}</h3><p><strong>${escapeHtml(profile.labels.attack)}:</strong> ${formatBonus(data.derived.attackBonus)} &nbsp; <strong>${escapeHtml(profile.labels.damage)}:</strong> ${escapeHtml(data.damage.formula)} ${prop}</p><ol>${rows}</ol>${data.defender ? `<p><strong>${escapeHtml(L("GTWARBANDS.Chat.TotalEffectivenessDamage"))}:</strong> ${data.totalDamage}</p>` : ""}</div>`;
+  return `<div class="gt-wb-chat-card"><h3>${escapeHtml(data.attacker.name)} — ${escapeHtml(data.attack?.name ?? profile.labels.attack)}${target}</h3><p><strong>${chatProfileLabel(profile, "attack")}:</strong> ${formatBonus(data.derived.attackBonus)} &nbsp; <strong>${chatProfileLabel(profile, "damage")}:</strong> ${escapeHtml(data.damage.formula)} ${prop}</p><ol>${rows}</ol>${data.defender ? `<p><strong>${localizedChatText("GTWARBANDS.Chat.TotalEffectivenessDamage")}:</strong> ${data.totalDamage}</p>` : ""}</div>`;
 }
 
 async function rollAttack(actor, attack) {
@@ -378,7 +408,7 @@ async function resolveMeleeExchange(attacker) {
   await defender.update({ "system.effectiveness.value": dAfter });
 
   const p = getActiveProfile();
-  const content = `<div class="gt-wb-chat-card gt-wb-exchange-card"><h2>${escapeHtml(L("GTWARBANDS.Chat.MeleeExchange"))}</h2>${renderAttackSetHtml(aResult)}<p><strong>${escapeHtml(defender.name)}:</strong> ${dBefore} → ${dAfter} ${escapeHtml(p.labels.effectiveness)}</p><hr>${renderAttackSetHtml(dResult)}<p><strong>${escapeHtml(attacker.name)}:</strong> ${aBefore} → ${aAfter} ${escapeHtml(p.labels.effectiveness)}</p><p><em>${escapeHtml(L("GTWARBANDS.Chat.SimultaneousNote"))}</em></p></div>`;
+  const content = `<div class="gt-wb-chat-card gt-wb-exchange-card"><h2>${localizedChatText("GTWARBANDS.Chat.MeleeExchange")}</h2>${renderAttackSetHtml(aResult)}<p><strong>${escapeHtml(defender.name)}:</strong> ${dBefore} → ${dAfter} ${chatProfileLabel(p, "effectiveness")}</p><hr>${renderAttackSetHtml(dResult)}<p><strong>${escapeHtml(attacker.name)}:</strong> ${aBefore} → ${aAfter} ${chatProfileLabel(p, "effectiveness")}</p><p><em>${localizedChatText("GTWARBANDS.Chat.SimultaneousNote")}</em></p></div>`;
   await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: attacker }), content });
 }
 
@@ -584,7 +614,6 @@ class WarbandProfileConfig extends FormApplicationV1 {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "gt-warbands-profile-config",
-      title: L("GTWARBANDS.ProfileConfig.Title"),
       template: `modules/${MODULE_ID}/templates/apps/profile-config.hbs`,
       width: 760,
       height: 820,
@@ -592,6 +621,10 @@ class WarbandProfileConfig extends FormApplicationV1 {
       closeOnSubmit: false,
       submitOnChange: false
     });
+  }
+
+  get title() {
+    return L("GTWARBANDS.ProfileConfig.Title");
   }
 
   async getData(options = {}) {
@@ -701,6 +734,7 @@ class WarbandProfileConfig extends FormApplicationV1 {
 }
 
 Hooks.once("init", () => {
+  registerLocalization();
   registerSettings();
   registerSkirmishSettings();
   registerSkirmishHooks();
@@ -712,11 +746,13 @@ Hooks.once("init", () => {
   console.log(`${MODULE_ID} | Registered Warband Actor and Attack subtypes.`);
 });
 
-Hooks.once("ready", () => {
+Hooks.once("ready", async () => {
+  await activateLanguage();
   const mod = game.modules.get(MODULE_ID);
   if (mod) mod.api = {
     WARBAND_TYPE, ATTACK_TYPE, DEFAULT_PROFILE, getActiveProfile, deriveWarband, deriveDamage,
-    rollEffectiveness, rollAttack, resolveMeleeExchange, applyPropertyDefense
+    rollEffectiveness, rollAttack, resolveMeleeExchange, applyPropertyDefense,
+    localization: getLocalizationApi()
   };
   if (game.system.id !== "shadowdark") ui.notifications.warn(L("GTWARBANDS.Notification.WrongSystem"));
   console.log(`${MODULE_ID} | Ready — ${getActiveProfile().name}`);

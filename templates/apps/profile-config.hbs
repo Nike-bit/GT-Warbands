@@ -1,29 +1,29 @@
 <form class="gt-wb-profile-config" autocomplete="off">
-  <h2>{{localize "GTWARBANDS.ProfileConfig.RulesProfile"}}</h2>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.ActiveProfile"}}</label><select name="activeProfile">{{#each profiles as |opt|}}<option value="{{opt.value}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>{{/each}}</select></div>
-  <p class="notes">{{localize "GTWARBANDS.ProfileConfig.DefaultImmutableHint"}}</p>
-  <div class="gt-wb-profile-actions"><button type="button" data-action="clone-default"><i class="fas fa-copy"></i> {{localize "GTWARBANDS.ProfileConfig.CloneDefault"}}</button><button type="button" data-action="reset-custom"><i class="fas fa-rotate-left"></i> {{localize "GTWARBANDS.ProfileConfig.ResetCustom"}}</button></div>
+  <h2>{{gtwLocalize "GTWARBANDS.ProfileConfig.RulesProfile"}}</h2>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.ActiveProfile"}}</label><select name="activeProfile">{{#each profiles as |opt|}}<option value="{{opt.value}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>{{/each}}</select></div>
+  <p class="notes">{{gtwLocalize "GTWARBANDS.ProfileConfig.DefaultImmutableHint"}}</p>
+  <div class="gt-wb-profile-actions"><button type="button" data-action="clone-default"><i class="fas fa-copy"></i> {{gtwLocalize "GTWARBANDS.ProfileConfig.CloneDefault"}}</button><button type="button" data-action="reset-custom"><i class="fas fa-rotate-left"></i> {{gtwLocalize "GTWARBANDS.ProfileConfig.ResetCustom"}}</button></div>
 
-  <h2>{{localize "GTWARBANDS.ProfileConfig.CustomProfile"}}</h2>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.ProfileName"}}</label><input type="text" name="custom.name" value="{{custom.name}}"></div>
+  <h2>{{gtwLocalize "GTWARBANDS.ProfileConfig.CustomProfile"}}</h2>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.ProfileName"}}</label><input type="text" name="custom.name" value="{{custom.name}}"></div>
 
-  <h3>{{localize "GTWARBANDS.ProfileConfig.QualityLabels"}}</h3>
+  <h3>{{gtwLocalize "GTWARBANDS.ProfileConfig.QualityLabels"}}</h3>
   <div class="gt-wb-profile-grid">{{#each qualityLabelRows as |quality|}}<label><span>{{quality.generic}}</span><input type="text" name="custom.labels.{{quality.key}}" value="{{quality.label}}"></label>{{/each}}</div>
 
-  <h3>{{localize "GTWARBANDS.ProfileConfig.AbilityLabels"}}</h3>
+  <h3>{{gtwLocalize "GTWARBANDS.ProfileConfig.AbilityLabels"}}</h3>
   <div class="gt-wb-profile-grid">{{#each abilityRows as |ability|}}<label><span>{{ability.generic}}</span><input type="text" name="custom.abilities.{{ability.key}}.label" value="{{ability.label}}"></label>{{/each}}</div>
 
-  <h3>{{localize "GTWARBANDS.ProfileConfig.CoreFormulas"}}</h3>
-  <p class="notes">{{localize "GTWARBANDS.ProfileConfig.FormulaHint"}}</p>
+  <h3>{{gtwLocalize "GTWARBANDS.ProfileConfig.CoreFormulas"}}</h3>
+  <p class="notes">{{gtwLocalize "GTWARBANDS.ProfileConfig.FormulaHint"}}</p>
   {{#each formulaRows as |row|}}<div class="form-group"><label>{{row.label}}</label><input type="text" name="custom.formulas.{{row.key}}" value="{{row.value}}"></div>{{/each}}
 
-  <h3>{{localize "GTWARBANDS.ProfileConfig.Effectiveness"}}</h3>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.DieFaces"}}</label><input type="number" min="2" step="1" name="custom.effectiveness.dieFaces" value="{{custom.effectiveness.dieFaces}}"></div>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.FullThreshold"}}</label><input type="number" min="0.01" max="0.99" step="0.01" name="custom.effectiveness.bands.full" value="{{custom.effectiveness.bands.full}}"></div>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.HalfThreshold"}}</label><input type="number" min="0" max="0.98" step="0.01" name="custom.effectiveness.bands.half" value="{{custom.effectiveness.bands.half}}"></div>
+  <h3>{{gtwLocalize "GTWARBANDS.ProfileConfig.Effectiveness"}}</h3>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.DieFaces"}}</label><input type="number" min="2" step="1" name="custom.effectiveness.dieFaces" value="{{custom.effectiveness.dieFaces}}"></div>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.FullThreshold"}}</label><input type="number" min="0.01" max="0.99" step="0.01" name="custom.effectiveness.bands.full" value="{{custom.effectiveness.bands.full}}"></div>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.HalfThreshold"}}</label><input type="number" min="0" max="0.98" step="0.01" name="custom.effectiveness.bands.half" value="{{custom.effectiveness.bands.half}}"></div>
 
-  <h3>{{localize "GTWARBANDS.ProfileConfig.MightDamageDie"}}</h3>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.MightCap"}}</label><input type="number" min="0" step="1" name="custom.damage.mightCap" value="{{custom.damage.mightCap}}"></div>
+  <h3>{{gtwLocalize "GTWARBANDS.ProfileConfig.MightDamageDie"}}</h3>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.MightCap"}}</label><input type="number" min="0" step="1" name="custom.damage.mightCap" value="{{custom.damage.mightCap}}"></div>
   <div class="gt-wb-die-grid">
     <label><span>{{custom.abilities.ability1A.label}} +0</span><input type="number" min="2" step="1" name="custom.damage.mightDieFaces.0" value="{{lookup custom.damage.mightDieFaces "0"}}"></label>
     <label><span>{{custom.abilities.ability1A.label}} +1</span><input type="number" min="2" step="1" name="custom.damage.mightDieFaces.1" value="{{lookup custom.damage.mightDieFaces "1"}}"></label>
@@ -33,11 +33,11 @@
     <label><span>{{custom.abilities.ability1A.label}} +5</span><input type="number" min="2" step="1" name="custom.damage.mightDieFaces.5" value="{{lookup custom.damage.mightDieFaces "5"}}"></label>
   </div>
 
-  <h3>{{localize "GTWARBANDS.ProfileConfig.AbilityProperty"}}</h3>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.SourceAbility"}}</label><select name="custom.damage.ability1CProperty.abilityKey">{{#each propertyAbilityOptions as |opt|}}<option value="{{opt.key}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>{{/each}}</select></div>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.Threshold"}}</label><input type="number" step="1" name="custom.damage.ability1CProperty.threshold" value="{{custom.damage.ability1CProperty.threshold}}"></div>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.AttackPropertyLabel"}}</label><input type="text" name="custom.damage.ability1CProperty.label" value="{{custom.damage.ability1CProperty.label}}"></div>
-  <div class="form-group"><label>{{localize "GTWARBANDS.ProfileConfig.DefenseLabel"}}</label><input type="text" name="custom.damage.ability1CProperty.defenseLabel" value="{{custom.damage.ability1CProperty.defenseLabel}}"></div>
+  <h3>{{gtwLocalize "GTWARBANDS.ProfileConfig.AbilityProperty"}}</h3>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.SourceAbility"}}</label><select name="custom.damage.ability1CProperty.abilityKey">{{#each propertyAbilityOptions as |opt|}}<option value="{{opt.key}}" {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>{{/each}}</select></div>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.Threshold"}}</label><input type="number" step="1" name="custom.damage.ability1CProperty.threshold" value="{{custom.damage.ability1CProperty.threshold}}"></div>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.AttackPropertyLabel"}}</label><input type="text" name="custom.damage.ability1CProperty.label" value="{{custom.damage.ability1CProperty.label}}"></div>
+  <div class="form-group"><label>{{gtwLocalize "GTWARBANDS.ProfileConfig.DefenseLabel"}}</label><input type="text" name="custom.damage.ability1CProperty.defenseLabel" value="{{custom.damage.ability1CProperty.defenseLabel}}"></div>
 
-  <footer class="sheet-footer"><button type="submit"><i class="fas fa-save"></i> {{localize "GTWARBANDS.ProfileConfig.Save"}}</button></footer>
+  <footer class="sheet-footer"><button type="submit"><i class="fas fa-save"></i> {{gtwLocalize "GTWARBANDS.ProfileConfig.Save"}}</button></footer>
 </form>

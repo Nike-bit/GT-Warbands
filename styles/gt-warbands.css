@@ -56,3 +56,16 @@
 .gt-wb-exchange-card hr { margin:10px 0; }
 .shadowdark.sheet.npc .SD-title .gt-wb-skirmish-toggle { display:flex; align-items:center; justify-content:center; gap:6px; margin-top:2px; color:white; font-family:var(--font-primary); font-size:.72rem; font-weight:700; line-height:1.1; }
 .shadowdark.sheet.npc .SD-title .gt-wb-skirmish-toggle input[type="checkbox"] { flex:0 0 auto; width:14px; height:14px; margin:0; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:5px 8px; width:100%; margin-top:6px; padding-top:5px; border-top:1px solid currentColor; font-family:var(--font-primary); font-size:.72rem; line-height:1.2; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition-summary { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:5px; }
+.shadowdark.sheet.npc .gt-wb-skirmish-override-badge { padding:1px 4px; border:1px solid currentColor; font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
+.shadowdark.sheet.npc .gt-wb-skirmish-override { flex:0 1 135px; width:auto; min-width:0; height:24px; font-size:.68rem; }
+.shadowdark.sheet.item .gt-wb-skirmish-profiles { margin-top:14px; padding-top:10px; border-top:2px solid currentColor; }
+.shadowdark.sheet.item .gt-wb-skirmish-profiles > h3 { margin:0 0 3px; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-status { margin-bottom:8px; font-size:.75rem; font-weight:700; opacity:.8; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-grid { display:grid; grid-template-columns:minmax(90px,1.1fr) minmax(76px,.8fr) minmax(76px,.8fr) minmax(110px,1.3fr); align-items:center; gap:5px 7px; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-grid > strong { min-width:0; text-align:center; font-size:.7rem; line-height:1.15; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-row { grid-column:1 / -1; display:grid; grid-template-columns:minmax(90px,1.1fr) minmax(76px,.8fr) minmax(76px,.8fr) minmax(110px,1.3fr); align-items:center; gap:5px 7px; padding:4px; border:1px solid transparent; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-row.is-active { border-color:currentColor; background:rgba(127,127,127,.12); }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-row > strong { min-width:0; font-size:.75rem; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-row input { min-width:0; width:100%; }

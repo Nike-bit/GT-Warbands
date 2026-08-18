@@ -54,18 +54,25 @@
 .gt-wb-chat-card ol { margin:5px 0 5px 20px; }
 .gt-wb-chat-property { display:inline-block; margin-left:5px; padding:0 4px; border:1px solid currentColor; font-size:.7rem; font-weight:800; text-transform:uppercase; }
 .gt-wb-exchange-card hr { margin:10px 0; }
-.shadowdark.sheet.npc .SD-title .gt-wb-skirmish-toggle { display:flex; align-items:center; justify-content:center; gap:6px; margin-top:2px; color:white; font-family:var(--font-primary); font-size:.72rem; font-weight:700; line-height:1.1; }
-.shadowdark.sheet.npc .SD-title .gt-wb-skirmish-toggle input[type="checkbox"] { flex:0 0 auto; width:14px; height:14px; margin:0; }
-.shadowdark.sheet.npc .gt-wb-skirmish-condition { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:5px 8px; width:100%; margin-top:6px; padding-top:5px; border-top:1px solid currentColor; font-family:var(--font-primary); font-size:.72rem; line-height:1.2; }
-.shadowdark.sheet.npc .gt-wb-skirmish-condition-summary { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:5px; }
+.shadowdark.sheet.npc .SD-box .header .gt-wb-skirmish-toggle { display:inline-flex; align-items:center; justify-content:center; margin-left:6px; opacity:.42; line-height:1; }
+.shadowdark.sheet.npc .SD-box .header .gt-wb-skirmish-toggle.is-active { color:var(--primary, #fff); opacity:1; text-shadow:0 0 4px currentColor; }
+.shadowdark.sheet.npc .SD-box .header .gt-wb-skirmish-toggle.is-disabled { cursor:default; opacity:.25; }
+.shadowdark.sheet.npc .SD-box .header .gt-wb-skirmish-toggle.is-pending { pointer-events:none; opacity:.55; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition { display:grid; grid-template-columns:minmax(0, 1fr); gap:4px; width:100%; margin-top:6px; padding-top:5px; border-top:1px solid currentColor; font-family:var(--font-primary); font-size:.72rem; line-height:1.2; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition-summary { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:5px; }
 .shadowdark.sheet.npc .gt-wb-skirmish-override-badge { padding:1px 4px; border:1px solid currentColor; font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
-.shadowdark.sheet.npc .gt-wb-skirmish-override { flex:0 1 135px; width:auto; min-width:0; height:24px; font-size:.68rem; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition-track { position:relative; width:100%; height:7px; overflow:hidden; border:1px solid currentColor; border-radius:3px; background:rgba(0, 0, 0, .2); }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition-fill { display:block; height:100%; background:#458b45; transition:width .15s ease; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition.is-worn .gt-wb-skirmish-condition-fill { background:#d09a31; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition.is-battered .gt-wb-skirmish-condition-fill { background:#b54b3d; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition.is-defeated .gt-wb-skirmish-condition-fill { background:#6f6f6f; }
+.shadowdark.sheet.npc .gt-wb-skirmish-override { width:100%; min-width:0; height:24px; font-size:.68rem; }
 .shadowdark.sheet.item .gt-wb-skirmish-profiles { margin-top:14px; padding-top:10px; border-top:2px solid currentColor; }
 .shadowdark.sheet.item .gt-wb-skirmish-profiles > h3 { margin:0 0 3px; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-status { margin-bottom:8px; font-size:.75rem; font-weight:700; opacity:.8; }
-.shadowdark.sheet.item .gt-wb-skirmish-profile-grid { display:grid; grid-template-columns:minmax(90px,1.1fr) minmax(76px,.8fr) minmax(76px,.8fr) minmax(110px,1.3fr); align-items:center; gap:5px 7px; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-grid { display:grid; grid-template-columns:minmax(70px,1fr) repeat(4,minmax(58px,.8fr)); align-items:center; gap:5px 7px; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-grid > strong { min-width:0; text-align:center; font-size:.7rem; line-height:1.15; }
-.shadowdark.sheet.item .gt-wb-skirmish-profile-row { grid-column:1 / -1; display:grid; grid-template-columns:minmax(90px,1.1fr) minmax(76px,.8fr) minmax(76px,.8fr) minmax(110px,1.3fr); align-items:center; gap:5px 7px; padding:4px; border:1px solid transparent; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-row { grid-column:1 / -1; display:grid; grid-template-columns:minmax(70px,1fr) repeat(4,minmax(58px,.8fr)); align-items:center; gap:5px 7px; padding:4px; border:1px solid transparent; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row.is-active { border-color:currentColor; background:rgba(127,127,127,.12); }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row > strong { min-width:0; font-size:.75rem; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row input { min-width:0; width:100%; }

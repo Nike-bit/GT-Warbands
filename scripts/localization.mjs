@@ -215,6 +215,10 @@ function shouldRerenderApplication(application) {
     return true;
   }
 
+  if (application?.constructor?.name === "RollDialogSD" && application?.config?.gtWarbandsSkirmish) {
+    return true;
+  }
+
   const actor = application?.actor
     ?? (application?.document?.documentName === "Actor" ? application.document : null);
   if (actor?.documentName === "Actor") {
@@ -242,8 +246,14 @@ function shouldRerenderApplication(application) {
 }
 
 function rerenderOpenApplications() {
-  for (const application of Object.values(ui.windows ?? {})) {
-    if (shouldRerenderApplication(application)) application.render(false);
+  const applications = new Set([
+    ...Object.values(ui.windows ?? {}),
+    ...Array.from(globalThis.foundry?.applications?.instances?.values?.() ?? [])
+  ]);
+  for (const application of applications) {
+    if (!shouldRerenderApplication(application)) continue;
+    if (application.constructor?.name === "RollDialogSD") application.render({ force: true });
+    else application.render(false);
   }
 
   const settingsSheet = game.settings.sheet;

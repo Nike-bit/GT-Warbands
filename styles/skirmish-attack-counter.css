@@ -1,0 +1,32 @@
+.gt-wb-attack-counter {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px 40px 28px;
+  align-items: center;
+  gap: 5px;
+  margin: 6px 0;
+}
+
+.gt-wb-attack-counter-label {
+  min-width: 0;
+  font-weight: 700;
+}
+
+.gt-wb-attack-counter button {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  line-height: 1;
+}
+
+.gt-wb-attack-counter-input {
+  display: none;
+}
+
+.gt-wb-attack-counter-output {
+  display: block;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}

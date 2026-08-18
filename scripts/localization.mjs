@@ -203,6 +203,18 @@ function refreshRegisteredLabels() {
     name: localize("GTWARBANDS.Settings.EnableSkirmishNpcSupport"),
     hint: localize("GTWARBANDS.Settings.EnableSkirmishNpcSupportHint")
   });
+  updateRegistryEntry(game.settings.settings, "enhancedNpcAttackSheets", {
+    name: localize("GTWARBANDS.Settings.EnhancedNpcAttackSheets"),
+    hint: localize("GTWARBANDS.Settings.EnhancedNpcAttackSheetsHint")
+  });
+  updateRegistryEntry(game.settings.settings, "skirmishRules", {
+    name: localize("GTWARBANDS.SkirmishRules.Title")
+  });
+  updateRegistryEntry(game.settings.menus, "skirmishRulesMenu", {
+    name: localize("GTWARBANDS.SkirmishRules.Title"),
+    label: localize("GTWARBANDS.SkirmishRules.Configure"),
+    hint: localize("GTWARBANDS.SkirmishRules.Hint")
+  });
   updateRegistryEntry(game.settings.menus, "profileMenu", {
     name: localize("GTWARBANDS.ProfileMenu.Name"),
     label: localize("GTWARBANDS.ProfileMenu.Label"),
@@ -211,11 +223,12 @@ function refreshRegisteredLabels() {
 }
 
 function shouldRerenderApplication(application) {
-  if (application?.id === "gt-warbands-profile-config" || application?.options?.id === "gt-warbands-profile-config") {
+  if (["gt-warbands-profile-config", "gt-warbands-skirmish-rules-config"].includes(application?.id)
+    || ["gt-warbands-profile-config", "gt-warbands-skirmish-rules-config"].includes(application?.options?.id)) {
     return true;
   }
 
-  if (application?.constructor?.name === "RollDialogSD" && application?.config?.gtWarbandsSkirmish) {
+  if (application?.constructor?.name === "RollDialogSD" && application?.config?.gtWarbandsAttackCounter) {
     return true;
   }
 
@@ -236,9 +249,10 @@ function shouldRerenderApplication(application) {
   if (item?.type === `${MODULE_ID}.attack`) return true;
   if (game.system.id !== "shadowdark" || item?.type !== "NPC Attack") return false;
   try {
-    return Boolean(game.settings.get(MODULE_ID, "enableSkirmishNpcSupport"))
-      && item.parent?.type === "NPC"
+    if (item.parent?.type !== "NPC") return false;
+    const skirmish = Boolean(game.settings.get(MODULE_ID, "enableSkirmishNpcSupport"))
       && Boolean(item.parent.getFlag(MODULE_ID, "isSkirmishWarband"));
+    return skirmish || Boolean(game.settings.get(MODULE_ID, "enhancedNpcAttackSheets"));
   }
   catch (_error) {
     return false;

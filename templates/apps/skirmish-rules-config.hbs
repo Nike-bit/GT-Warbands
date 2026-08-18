@@ -1,0 +1,29 @@
+<form class="gt-wb-skirmish-rules-config" autocomplete="off">
+  <h2>{{gtwLocalize "GTWARBANDS.SkirmishRules.Title"}}</h2>
+  <p class="notes">{{gtwLocalize "GTWARBANDS.SkirmishRules.Description"}}</p>
+
+  <div class="gt-wb-skirmish-rules-grid">
+    <strong>{{gtwLocalize "GTWARBANDS.Skirmish.Condition"}}</strong>
+    <strong>{{gtwLocalize "GTWARBANDS.Skirmish.AttackCountModifier"}}</strong>
+    <strong>{{gtwLocalize "GTWARBANDS.Skirmish.AttackBonusModifier"}}</strong>
+    <strong>{{gtwLocalize "GTWARBANDS.Skirmish.DamageDiceCountModifier"}}</strong>
+    <strong>{{gtwLocalize "GTWARBANDS.Skirmish.DamageDieCategoryModifier"}}</strong>
+
+    {{#each rows as |row|}}
+      <strong>{{row.label}}</strong>
+      <input type="number" step="1" name="rules.{{row.condition}}.attackCountModifier" value="{{row.attackCountModifier}}">
+      <input type="number" step="1" name="rules.{{row.condition}}.attackBonusModifier" value="{{row.attackBonusModifier}}">
+      <input type="number" step="1" name="rules.{{row.condition}}.damageDiceCountModifier" value="{{row.damageDiceCountModifier}}">
+      <input type="number" step="1" name="rules.{{row.condition}}.damageDieCategoryModifier" value="{{row.damageDieCategoryModifier}}">
+    {{/each}}
+  </div>
+
+  <div class="gt-wb-skirmish-rules-actions">
+    <button type="button" data-action="reset-skirmish-rules">
+      <i class="fas fa-rotate-left"></i> {{gtwLocalize "GTWARBANDS.SkirmishRules.ResetDefaults"}}
+    </button>
+    <button type="submit">
+      <i class="fas fa-save"></i> {{gtwLocalize "GTWARBANDS.ProfileConfig.Save"}}
+    </button>
+  </div>
+</form>

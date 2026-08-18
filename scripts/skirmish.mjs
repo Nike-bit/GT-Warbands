@@ -3,6 +3,12 @@ import {
   registerAttackCounterRollWrapper,
   setAttackCounterMaximum
 } from "./skirmish-attack-counter.mjs";
+import { injectDsMonsterDefensesControls } from "./skirmish-ds-monster-defenses.mjs";
+import {
+  enhancedNpcAttackSheetsEnabled,
+  getSkirmishRules,
+  registerSkirmishRuleSettings
+} from "./skirmish-rules.mjs";
 import { format as formatGtw, localize as localizeGtw } from "./localization.mjs";
 
 const MODULE_ID = "gt-warbands";
@@ -13,6 +19,7 @@ const SKIRMISH_SETTING = "enableSkirmishNpcSupport";
 const SKIRMISH_FLAG = "isSkirmishWarband";
 const CONDITION_OVERRIDE_FLAG = "conditionOverride";
 const SKIRMISH_PROFILES_FLAG = "skirmishProfiles";
+const SKIRMISH_ATTACK_OVERRIDES_FLAG = "skirmishAttackOverrides";
 const TOGGLE_CLASS = "gt-wb-skirmish-toggle";
 const CONDITION_CLASS = "gt-wb-skirmish-condition";
 const PROFILES_CLASS = "gt-wb-skirmish-profiles";
@@ -25,11 +32,6 @@ const CONDITION_KEYS = Object.freeze({
   worn: "GTWARBANDS.Skirmish.Worn",
   battered: "GTWARBANDS.Skirmish.Battered",
   defeated: "GTWARBANDS.Skirmish.Defeated"
-});
-const DEFAULT_MODIFIERS = Object.freeze({
-  fresh: Object.freeze({ attackCountModifier: 1, attackBonusModifier: 1, damageDiceCountModifier: 1, damageDieCategoryModifier: 1 }),
-  worn: Object.freeze({ attackCountModifier: 0, attackBonusModifier: 1, damageDiceCountModifier: 1, damageDieCategoryModifier: 1 }),
-  battered: Object.freeze({ attackCountModifier: 0, attackBonusModifier: 0, damageDiceCountModifier: 1, damageDieCategoryModifier: 0 })
 });
 const DAMAGE_DIE_LADDER = Object.freeze([4, 6, 8, 10, 12]);
 const MODIFIER_FIELDS = Object.freeze([
@@ -150,7 +152,7 @@ function normalizeLegacyProfile(profile, base) {
 }
 
 function inferLegacyModifiers(condition, legacy, base) {
-  const defaults = DEFAULT_MODIFIERS[condition];
+  const defaults = getSkirmishRules()[condition];
   const baseDamage = parseSimpleDamage(base.damage);
   const legacyDamage = parseSimpleDamage(legacy.damage);
   let damageDiceCountModifier = defaults.damageDiceCountModifier;
@@ -170,10 +172,35 @@ function inferLegacyModifiers(condition, legacy, base) {
 function getConditionProfile(item, condition) {
   const base = nativeAttackProfile(item);
   const stored = item?.getFlag(MODULE_ID, SKIRMISH_PROFILES_FLAG)?.[condition];
-  const defaults = DEFAULT_MODIFIERS[condition] ?? DEFAULT_MODIFIERS.battered;
+  const rules = getSkirmishRules();
+  const defaults = rules[condition] ?? rules.battered;
   if (!stored || isModifierProfile(stored)) return { mode: "modifiers", modifiers: normalizeModifiers(stored, defaults) };
   const absolute = normalizeLegacyProfile(stored, base);
   return { mode: "legacy", absolute, modifiers: inferLegacyModifiers(condition, absolute, base) };
+}
+
+function getResolvedOverride(item, condition) {
+  const stored = item?.getFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG)?.[condition];
+  return stored && typeof stored === "object" ? stored : {};
+}
+
+function hasItemCustomization(item, condition) {
+  const legacy = item?.getFlag(MODULE_ID, SKIRMISH_PROFILES_FLAG)?.[condition];
+  const resolved = getResolvedOverride(item, condition);
+  return Boolean(legacy || Object.keys(resolved).length);
+}
+
+function applyResolvedOverride(effective, override) {
+  const attackCount = Number(override.attackCount);
+  const attackBonus = Number(override.attackBonus);
+  const damage = typeof override.damage === "string" ? override.damage.trim() : "";
+  return {
+    ...effective,
+    attackCount: Number.isFinite(attackCount) && attackCount >= 1 ? Math.floor(attackCount) : effective.attackCount,
+    attackBonus: Number.isFinite(attackBonus) ? Math.trunc(attackBonus) : effective.attackBonus,
+    damage: damage || effective.damage,
+    manualOverride: Object.keys(override).length > 0
+  };
 }
 
 function deriveEffectiveAttack(item, condition = getActiveCondition(item?.parent)) {
@@ -181,11 +208,17 @@ function deriveEffectiveAttack(item, condition = getActiveCondition(item?.parent
   if (!COMBAT_CONDITIONS.includes(condition)) return { ...base, condition, base, damageTransformed: false, legacy: false };
   const profile = getConditionProfile(item, condition);
   if (profile.mode === "legacy") {
-    return { ...profile.absolute, condition, base, damageTransformed: profile.absolute.damage !== base.damage, legacy: true };
+    return applyResolvedOverride({
+      ...profile.absolute,
+      condition,
+      base,
+      damageTransformed: profile.absolute.damage !== base.damage,
+      legacy: true
+    }, getResolvedOverride(item, condition));
   }
   const modifiers = profile.modifiers;
   const damage = transformDamageFormula(base.damage, modifiers.damageDiceCountModifier, modifiers.damageDieCategoryModifier);
-  return {
+  return applyResolvedOverride({
     attackCount: Math.max(1, base.attackCount + modifiers.attackCountModifier),
     attackBonus: base.attackBonus + modifiers.attackBonusModifier,
     damage: damage.formula,
@@ -193,7 +226,7 @@ function deriveEffectiveAttack(item, condition = getActiveCondition(item?.parent
     base,
     damageTransformed: damage.transformed,
     legacy: false
-  };
+  }, getResolvedOverride(item, condition));
 }
 
 function signedBonus(value) {
@@ -217,21 +250,24 @@ function resolveUuidSync(uuid) {
 function resolveConfigAttack(config) {
   const item = resolveUuidSync(config?.itemUuid);
   const actor = item?.parent;
-  if (!isSkirmishEnabled() || !isShadowdarkNpcAttack(item) || !isSkirmishWarband(actor)) return null;
-  return { item, actor, condition: getActiveCondition(actor) };
+  if (!isShadowdarkNpcAttack(item) || !isShadowdarkNpc(actor)) return null;
+  const skirmish = isSkirmishEnabled() && isSkirmishWarband(actor);
+  if (!skirmish && !enhancedNpcAttackSheetsEnabled()) return null;
+  const condition = skirmish ? getActiveCondition(actor) : null;
+  const effective = skirmish ? deriveEffectiveAttack(item, condition) : nativeAttackProfile(item);
+  return { item, actor, condition, effective, skirmish };
 }
 
 function applyEffectiveAttackConfig(config, { setCounter = true } = {}) {
   const resolved = resolveConfigAttack(config);
   if (!resolved) return null;
-  const { item, actor, condition } = resolved;
-  if (condition === "defeated") return { item, actor, condition, defeated: true };
-  const effective = deriveEffectiveAttack(item, condition);
-  if (config.mainRoll?.base) {
+  const { item, actor, condition, effective, skirmish } = resolved;
+  if (skirmish && condition === "defeated") return { item, actor, condition, effective, skirmish, defeated: true };
+  if (skirmish && config.mainRoll?.base) {
     config.mainRoll.bonus = signedBonus(effective.attackBonus);
     config.mainRoll.formula = `${config.mainRoll.base}${signedBonus(effective.attackBonus)}`;
   }
-  if (effective.damage) {
+  if (skirmish && effective.damage) {
     config.damageRoll ??= {};
     config.damageRoll.label ??= game.i18n.localize("SHADOWDARK.roll.damage");
     config.damageRoll.base = effective.damage;
@@ -239,7 +275,7 @@ function applyEffectiveAttackConfig(config, { setCounter = true } = {}) {
     config.damageRoll.criticalMultiplier ??= item.system.bonuses?.critical?.multiplier;
   }
   if (setCounter) setAttackCounterMaximum(config, effective.attackCount);
-  return { item, actor, condition, effective, defeated: false };
+  return { item, actor, condition, effective, skirmish, defeated: false };
 }
 
 function rerenderOpenSkirmishSheets(actor = null) {
@@ -305,12 +341,10 @@ function injectConditionDisplay(sheet, root, actor) {
     console.warn(`${MODULE_ID} | Shadowdark NPC HP box was not found; Skirmish Condition was not injected.`);
     return;
   }
-  const override = getConditionOverride(actor);
   const activeCondition = getActiveCondition(actor);
   const percentage = hpPercentage(actor);
   const section = document.createElement("div");
   section.classList.add(CONDITION_CLASS, `is-${activeCondition}`);
-  if (override !== "automatic") section.classList.add("is-override");
 
   const summary = document.createElement("div");
   summary.classList.add("gt-wb-skirmish-condition-summary");
@@ -320,12 +354,6 @@ function injectConditionDisplay(sheet, root, actor) {
   value.textContent = conditionLabel(activeCondition);
   text.append(value);
   summary.append(text);
-  if (override !== "automatic") {
-    const badge = document.createElement("span");
-    badge.classList.add("gt-wb-skirmish-override-badge");
-    badge.textContent = L("GTWARBANDS.Skirmish.OverrideActive");
-    summary.append(badge);
-  }
 
   const track = document.createElement("div");
   track.classList.add("gt-wb-skirmish-condition-track");
@@ -339,37 +367,6 @@ function injectConditionDisplay(sheet, root, actor) {
   fill.style.width = `${percentage}%`;
   track.append(fill);
   section.append(summary, track);
-
-  if (game.user.isGM && mayEdit(sheet, actor)) {
-    const select = document.createElement("select");
-    select.classList.add("gt-wb-skirmish-override");
-    select.dataset.tooltip = L("GTWARBANDS.Skirmish.ConditionOverride");
-    select.setAttribute("aria-label", select.dataset.tooltip);
-    for (const choice of ["automatic", ...ALL_CONDITIONS]) {
-      const option = document.createElement("option");
-      option.value = choice;
-      option.textContent = choice === "automatic" ? L("GTWARBANDS.Skirmish.Automatic") : conditionLabel(choice);
-      select.append(option);
-    }
-    select.value = override;
-    select.addEventListener("change", async event => {
-      event.stopPropagation();
-      const requested = select.value;
-      select.disabled = true;
-      try {
-        if (requested === "automatic") await actor.unsetFlag(MODULE_ID, CONDITION_OVERRIDE_FLAG);
-        else await actor.setFlag(MODULE_ID, CONDITION_OVERRIDE_FLAG, requested);
-        rerenderOpenSkirmishSheets(actor);
-      }
-      catch (error) {
-        select.value = override;
-        select.disabled = false;
-        ui.notifications.error(L("GTWARBANDS.Notification.SkirmishOverrideUpdateFailed"));
-        console.error(`${MODULE_ID} | Failed to update Skirmish Condition override.`, error);
-      }
-    });
-    section.append(select);
-  }
   valueGrid.insertAdjacentElement("afterend", section);
 }
 
@@ -404,17 +401,24 @@ async function updateEffectiveAttackDisplays(root, actor) {
   }
 }
 
-async function rollSkirmishHp(actor) {
-  const conBonus = shadowdark.dice.formatBonus(actor.system.abilities.con.mod);
+function buildSkirmishHpFormula(actor) {
+  const conModifier = Math.trunc(Number(actor.system.abilities.con.mod) || 0);
+  const conBonus = shadowdark.dice.formatBonus(2 * conModifier);
   const level = actor.system.level.value ?? 1;
-  const formula = level ? `${2 * level}d8${conBonus}` : `1${conBonus}`;
+  return level ? `${2 * level}d8${conBonus}` : `1${conBonus}`;
+}
+
+async function rollSkirmishHp(actor) {
+  const formula = buildSkirmishHpFormula(actor);
   const config = {
     actorUuid: actor.uuid,
     mainRoll: { label: L("GTWARBANDS.Skirmish.HpRoll"), formula },
     rollMode: CONST.DICE_ROLL_MODES.PRIVATE
   };
   const result = await shadowdark.dice.rollFromConfig(config);
-  await actor.update({ "system.attributes.hp.max": result.total, "system.attributes.hp.value": result.total });
+  if (!result) return;
+  const newHp = Number(result.total);
+  await actor.update({ "system.attributes.hp.max": newHp, "system.attributes.hp.value": newHp });
 }
 
 function interceptSkirmishHpRoll(root, actor) {
@@ -445,107 +449,207 @@ async function injectSkirmishActorUi(sheet, html) {
   await updateEffectiveAttackDisplays(root, actor);
 }
 
-function createModifierInput(field, value, editable, labelKey) {
+function createResolvedInput(type, field, value, editable, labelKey) {
   const input = document.createElement("input");
-  input.type = "number";
-  input.step = "1";
+  input.type = type;
+  if (type === "number") input.step = "1";
   input.dataset.profileField = field;
-  input.value = String(value ?? 0);
+  input.value = field === "attackBonus" ? signedBonus(value) : String(value ?? "");
   input.disabled = !editable;
   input.setAttribute("aria-label", L(labelKey));
   return input;
 }
 
-function readModifiersFromRow(row) {
-  const result = {};
-  for (const field of MODIFIER_FIELDS) {
-    const value = Number(row.querySelector(`[data-profile-field="${field}"]`)?.value);
-    if (!Number.isFinite(value)) return null;
-    result[field] = Math.trunc(value);
-  }
-  return result;
+async function setResolvedOverride(item, condition, field, value) {
+  const overrides = foundry.utils.deepClone(item.getFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG) ?? {});
+  overrides[condition] ??= {};
+  overrides[condition][field] = value;
+  await item.setFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG, overrides);
 }
 
-function injectSkirmishAttackProfiles(sheet, html) {
-  const item = getSheetItem(sheet);
-  const actor = item?.parent;
-  if (!isSkirmishEnabled() || !isShadowdarkNpcAttack(item) || !isSkirmishWarband(actor)) return;
-  const root = getHtmlRoot(html);
-  if (!root || root.querySelector(`.${PROFILES_CLASS}`)) return;
-  const nativeDetails = root.querySelector('.tab-details[data-tab="tab-details"] > .grid-3-columns');
-  if (!nativeDetails) {
-    console.warn(`${MODULE_ID} | Shadowdark NPC Attack details tab was not found; Skirmish profiles were not injected.`);
-    return;
+async function clearConditionCustomization(item, condition) {
+  for (const flag of [SKIRMISH_ATTACK_OVERRIDES_FLAG, SKIRMISH_PROFILES_FLAG]) {
+    const stored = foundry.utils.deepClone(item.getFlag(MODULE_ID, flag) ?? {});
+    if (!Object.hasOwn(stored, condition)) continue;
+    delete stored[condition];
+    if (Object.keys(stored).length) await item.setFlag(MODULE_ID, flag, stored);
+    else await item.unsetFlag(MODULE_ID, flag);
   }
+}
 
+function createConditionOverrideControl(sheet, actor) {
+  const row = document.createElement("label");
+  row.classList.add("gt-wb-skirmish-condition-control");
+  const label = document.createElement("span");
+  label.textContent = L("GTWARBANDS.Skirmish.ConditionOverride");
+  const select = document.createElement("select");
+  const current = getConditionOverride(actor);
+  select.disabled = !(game.user.isGM && mayEdit(sheet, actor));
+  for (const choice of ["automatic", ...ALL_CONDITIONS]) {
+    const option = document.createElement("option");
+    option.value = choice;
+    option.textContent = choice === "automatic" ? L("GTWARBANDS.Skirmish.Automatic") : conditionLabel(choice);
+    select.append(option);
+  }
+  select.value = current;
+  select.addEventListener("change", async event => {
+    event.stopPropagation();
+    const requested = select.value;
+    select.disabled = true;
+    try {
+      if (requested === "automatic") await actor.unsetFlag(MODULE_ID, CONDITION_OVERRIDE_FLAG);
+      else await actor.setFlag(MODULE_ID, CONDITION_OVERRIDE_FLAG, requested);
+      rerenderOpenSkirmishSheets(actor);
+    }
+    catch (error) {
+      select.value = current;
+      select.disabled = false;
+      ui.notifications.error(L("GTWARBANDS.Notification.SkirmishOverrideUpdateFailed"));
+      console.error(`${MODULE_ID} | Failed to update Skirmish Condition override.`, error);
+    }
+  });
+  row.append(label, select);
+  return row;
+}
+
+function createResolvedProfileGrid(sheet, item, actor) {
   const editable = mayEdit(sheet, item) && actor.isOwner;
   const activeCondition = getActiveCondition(actor);
-  const section = document.createElement("section");
-  section.classList.add(PROFILES_CLASS);
-  const heading = document.createElement("h3");
-  heading.textContent = L("GTWARBANDS.Skirmish.ConditionProfiles");
-  const status = document.createElement("div");
-  status.classList.add("gt-wb-skirmish-profile-status");
-  status.textContent = `${L("GTWARBANDS.Skirmish.Condition")}: ${conditionLabel(activeCondition)}`;
   const grid = document.createElement("div");
   grid.classList.add("gt-wb-skirmish-profile-grid");
   for (const text of [
-    "",
-    L("GTWARBANDS.Skirmish.AttackCountModifier"),
-    L("GTWARBANDS.Skirmish.AttackBonusModifier"),
-    L("GTWARBANDS.Skirmish.DamageDiceCountModifier"),
-    L("GTWARBANDS.Skirmish.DamageDieCategoryModifier")
+    L("GTWARBANDS.Skirmish.Condition"),
+    L("GTWARBANDS.Skirmish.NumAttacks"),
+    L("GTWARBANDS.Skirmish.AttackBonus"),
+    L("GTWARBANDS.Skirmish.DamageFormula"),
+    ""
   ]) {
     const header = document.createElement("strong");
     header.textContent = text;
     grid.append(header);
   }
-  const labelKeys = {
-    attackCountModifier: "GTWARBANDS.Skirmish.AttackCountModifier",
-    attackBonusModifier: "GTWARBANDS.Skirmish.AttackBonusModifier",
-    damageDiceCountModifier: "GTWARBANDS.Skirmish.DamageDiceCountModifier",
-    damageDieCategoryModifier: "GTWARBANDS.Skirmish.DamageDieCategoryModifier"
-  };
+
   for (const condition of COMBAT_CONDITIONS) {
-    const profile = getConditionProfile(item, condition);
+    const effective = deriveEffectiveAttack(item, condition);
+    const customized = hasItemCustomization(item, condition);
     const row = document.createElement("div");
     row.classList.add("gt-wb-skirmish-profile-row");
-    if (condition === activeCondition) row.classList.add("is-active");
+    row.classList.toggle("is-active", condition === activeCondition);
+    row.classList.toggle("is-manual", customized);
     row.dataset.condition = condition;
-    if (profile.mode === "legacy") row.dataset.legacy = "true";
     const label = document.createElement("strong");
     label.textContent = conditionLabel(condition);
-    row.append(label, ...MODIFIER_FIELDS.map(field => createModifierInput(field, profile.modifiers[field], editable, labelKeys[field])));
-    grid.append(row);
-  }
-  section.append(heading, status, grid);
-  nativeDetails.insertAdjacentElement("afterend", section);
+    const attackCount = createResolvedInput("number", "attackCount", effective.attackCount, editable, "GTWARBANDS.Skirmish.NumAttacks");
+    attackCount.min = "1";
+    const attackBonus = createResolvedInput("text", "attackBonus", effective.attackBonus, editable, "GTWARBANDS.Skirmish.AttackBonus");
+    const damage = createResolvedInput("text", "damage", effective.damage, editable, "GTWARBANDS.Skirmish.DamageFormula");
+    const reset = document.createElement("button");
+    reset.type = "button";
+    reset.classList.add("gt-wb-skirmish-profile-reset");
+    reset.dataset.tooltip = L("GTWARBANDS.Skirmish.ResetAutomatic");
+    reset.setAttribute("aria-label", reset.dataset.tooltip);
+    reset.disabled = !editable || !customized;
+    reset.innerHTML = '<i class="fas fa-rotate-left" aria-hidden="true"></i>';
 
-  for (const input of section.querySelectorAll("input")) {
-    input.addEventListener("change", async event => {
+    for (const input of [attackCount, attackBonus, damage]) {
+      input.addEventListener("change", async event => {
+        event.stopPropagation();
+        let value;
+        if (input.dataset.profileField === "damage") {
+          value = String(input.value ?? "").trim();
+          const invalidFormula = typeof Roll !== "undefined" && typeof Roll.validate === "function" && !Roll.validate(value);
+          if (!value || invalidFormula) {
+            ui.notifications.error(F("GTWARBANDS.Notification.SkirmishInvalidDamage", { formula: value }));
+            input.value = effective.damage;
+            return;
+          }
+        }
+        else {
+          value = Number(input.value);
+          if (!Number.isFinite(value) || (input.dataset.profileField === "attackCount" && value < 1)) {
+            input.value = input.dataset.profileField === "attackCount" ? effective.attackCount : signedBonus(effective.attackBonus);
+            return;
+          }
+          value = Math.trunc(value);
+        }
+
+        input.disabled = true;
+        try {
+          await setResolvedOverride(item, condition, input.dataset.profileField, value);
+          rerenderOpenSkirmishSheets(actor);
+        }
+        catch (error) {
+          input.disabled = false;
+          ui.notifications.error(L("GTWARBANDS.Notification.SkirmishProfilesUpdateFailed"));
+          console.error(`${MODULE_ID} | Failed to update Skirmish attack override.`, error);
+        }
+      });
+    }
+
+    reset.addEventListener("click", async event => {
+      event.preventDefault();
       event.stopPropagation();
-      if (!editable) return;
-      const row = input.closest("[data-condition]");
-      const modifiers = readModifiersFromRow(row);
-      if (!modifiers) return;
-      for (const field of row.querySelectorAll("input")) field.disabled = true;
+      reset.disabled = true;
       try {
-        const stored = foundry.utils.deepClone(item.getFlag(MODULE_ID, SKIRMISH_PROFILES_FLAG) ?? {});
-        stored[row.dataset.condition] = modifiers;
-        await item.setFlag(MODULE_ID, SKIRMISH_PROFILES_FLAG, stored);
+        await clearConditionCustomization(item, condition);
         rerenderOpenSkirmishSheets(actor);
       }
       catch (error) {
-        for (const field of row.querySelectorAll("input")) field.disabled = false;
+        reset.disabled = false;
         ui.notifications.error(L("GTWARBANDS.Notification.SkirmishProfilesUpdateFailed"));
-        console.error(`${MODULE_ID} | Failed to update Skirmish Condition profile.`, error);
+        console.error(`${MODULE_ID} | Failed to reset Skirmish attack override.`, error);
       }
     });
+
+    row.append(label, attackCount, attackBonus, damage, reset);
+    grid.append(row);
   }
+  return grid;
+}
+
+function injectEnhancedNpcAttackEditor(sheet, html) {
+  const item = getSheetItem(sheet);
+  const actor = item?.parent;
+  if (!isShadowdarkNpcAttack(item) || !isShadowdarkNpc(actor)) return;
+  const skirmish = isSkirmishEnabled() && isSkirmishWarband(actor);
+  if (!skirmish && !enhancedNpcAttackSheetsEnabled()) return;
+  const root = getHtmlRoot(html);
+  if (!root || root.querySelector(".gt-wb-enhanced-npc-attack")) return;
+  const nativeDetails = root.querySelector('.tab-details[data-tab="tab-details"] > .grid-3-columns');
+  if (!nativeDetails) {
+    console.warn(`${MODULE_ID} | Shadowdark NPC Attack details tab was not found; enhanced editor was not injected.`);
+    return;
+  }
+
+  root.classList.add("gt-wb-enhanced-npc-attack-sheet");
+  nativeDetails.classList.add("gt-wb-enhanced-native-grid");
+  const enhancement = document.createElement("section");
+  enhancement.classList.add("gt-wb-enhanced-npc-attack");
+
+  if (skirmish) {
+    const profiles = document.createElement("section");
+    profiles.classList.add(PROFILES_CLASS);
+    const heading = document.createElement("h2");
+    heading.textContent = L("GTWARBANDS.Skirmish.ConditionProfiles");
+    profiles.append(heading, createConditionOverrideControl(sheet, actor), createResolvedProfileGrid(sheet, item, actor));
+    enhancement.append(profiles);
+  }
+
+  const nativeHeading = document.createElement("h3");
+  nativeHeading.classList.add("gt-wb-enhanced-native-heading");
+  nativeHeading.textContent = L("GTWARBANDS.Skirmish.AttackConfiguration");
+  enhancement.append(nativeHeading);
+  nativeDetails.insertAdjacentElement("beforebegin", enhancement);
+
+  const compatibility = document.createElement("div");
+  compatibility.classList.add("gt-wb-enhanced-compatibility");
+  nativeDetails.insertAdjacentElement("afterend", compatibility);
+  injectDsMonsterDefensesControls({ sheet, item, container: compatibility });
+  Hooks.callAll("gt-warbands.renderEnhancedNpcAttackDetails", { sheet, item, actor, root, container: compatibility });
 }
 
 function onShadowdarkNpcAttack(config) {
-  if (config?.gtWarbandsSkirmish) {
+  if (config?.gtWarbandsAttackCounter) {
     const resolved = resolveConfigAttack(config);
     if (!resolved) return true;
     if (resolved.condition !== "defeated") return true;
@@ -589,14 +693,22 @@ export function registerSkirmishSettings() {
     default: false,
     onChange: () => rerenderOpenSkirmishSheets()
   });
+  registerSkirmishRuleSettings();
 }
 
 export function registerSkirmishHooks() {
   Hooks.on("renderActorSheet", injectSkirmishActorUi);
-  Hooks.on("renderItemSheet", injectSkirmishAttackProfiles);
+  Hooks.on("renderItemSheet", injectEnhancedNpcAttackEditor);
   Hooks.on("renderRollDialogSD", onRenderRollDialog);
   Hooks.on("SD-NPC-Attack", onShadowdarkNpcAttack);
+  Hooks.on("gt-warbands.skirmishRulesChanged", () => rerenderOpenSkirmishSheets());
   Hooks.once("ready", registerAttackCounterRollWrapper);
 }
 
-export const skirmishTestApi = Object.freeze({ deriveAutomaticCondition, parseSimpleDamage, transformDamageFormula, deriveEffectiveAttack });
+export const skirmishTestApi = Object.freeze({
+  deriveAutomaticCondition,
+  parseSimpleDamage,
+  transformDamageFormula,
+  deriveEffectiveAttack,
+  buildSkirmishHpFormula
+});

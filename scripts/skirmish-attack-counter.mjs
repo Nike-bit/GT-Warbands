@@ -2,7 +2,7 @@ import { format as formatGtw, localize as localizeGtw } from "./localization.mjs
 
 const MODULE_ID = "gt-warbands";
 const COUNTER_CLASS = "gt-wb-attack-counter";
-const META_KEY = "gtWarbandsSkirmish";
+const META_KEY = "gtWarbandsAttackCounter";
 let wrapperRegistered = false;
 
 function L(key) {

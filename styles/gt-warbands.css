@@ -59,20 +59,41 @@
 .shadowdark.sheet.npc .SD-box .header .gt-wb-skirmish-toggle.is-disabled { cursor:default; opacity:.25; }
 .shadowdark.sheet.npc .SD-box .header .gt-wb-skirmish-toggle.is-pending { pointer-events:none; opacity:.55; }
 .shadowdark.sheet.npc .gt-wb-skirmish-condition { display:grid; grid-template-columns:minmax(0, 1fr); gap:4px; width:100%; margin-top:6px; padding-top:5px; border-top:1px solid currentColor; font-family:var(--font-primary); font-size:.72rem; line-height:1.2; }
-.shadowdark.sheet.npc .gt-wb-skirmish-condition-summary { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:5px; }
-.shadowdark.sheet.npc .gt-wb-skirmish-override-badge { padding:1px 4px; border:1px solid currentColor; font-size:.62rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; }
+.shadowdark.sheet.npc .gt-wb-skirmish-condition-summary { display:flex; flex-wrap:wrap; align-items:center; gap:5px; }
 .shadowdark.sheet.npc .gt-wb-skirmish-condition-track { position:relative; width:100%; height:7px; overflow:hidden; border:1px solid currentColor; border-radius:3px; background:rgba(0, 0, 0, .2); }
 .shadowdark.sheet.npc .gt-wb-skirmish-condition-fill { display:block; height:100%; background:#458b45; transition:width .15s ease; }
 .shadowdark.sheet.npc .gt-wb-skirmish-condition.is-worn .gt-wb-skirmish-condition-fill { background:#d09a31; }
 .shadowdark.sheet.npc .gt-wb-skirmish-condition.is-battered .gt-wb-skirmish-condition-fill { background:#b54b3d; }
 .shadowdark.sheet.npc .gt-wb-skirmish-condition.is-defeated .gt-wb-skirmish-condition-fill { background:#6f6f6f; }
-.shadowdark.sheet.npc .gt-wb-skirmish-override { width:100%; min-width:0; height:24px; font-size:.68rem; }
-.shadowdark.sheet.item .gt-wb-skirmish-profiles { margin-top:14px; padding-top:10px; border-top:2px solid currentColor; }
-.shadowdark.sheet.item .gt-wb-skirmish-profiles > h3 { margin:0 0 3px; }
-.shadowdark.sheet.item .gt-wb-skirmish-profile-status { margin-bottom:8px; font-size:.75rem; font-weight:700; opacity:.8; }
-.shadowdark.sheet.item .gt-wb-skirmish-profile-grid { display:grid; grid-template-columns:minmax(70px,1fr) repeat(4,minmax(58px,.8fr)); align-items:center; gap:5px 7px; }
+.shadowdark.sheet.item .gt-wb-enhanced-npc-attack { display:grid; gap:10px; margin-bottom:12px; }
+.shadowdark.sheet.item .gt-wb-skirmish-profiles { display:grid; gap:8px; padding:8px; border:2px solid currentColor; }
+.shadowdark.sheet.item .gt-wb-skirmish-profiles > h2 { margin:0; font-size:1rem; }
+.shadowdark.sheet.item .gt-wb-skirmish-condition-control { display:grid; grid-template-columns:minmax(120px,1fr) minmax(140px,1fr); align-items:center; gap:8px; }
+.shadowdark.sheet.item .gt-wb-skirmish-condition-control > span { font-weight:700; }
+.shadowdark.sheet.item .gt-wb-skirmish-condition-control select { width:100%; min-width:0; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-grid { display:grid; grid-template-columns:minmax(72px,1fr) repeat(3,minmax(82px,1fr)) 30px; align-items:center; gap:5px 7px; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-grid > strong { min-width:0; text-align:center; font-size:.7rem; line-height:1.15; }
-.shadowdark.sheet.item .gt-wb-skirmish-profile-row { grid-column:1 / -1; display:grid; grid-template-columns:minmax(70px,1fr) repeat(4,minmax(58px,.8fr)); align-items:center; gap:5px 7px; padding:4px; border:1px solid transparent; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-row { grid-column:1 / -1; display:grid; grid-template-columns:minmax(72px,1fr) repeat(3,minmax(82px,1fr)) 30px; align-items:center; gap:5px 7px; padding:4px; border:1px solid transparent; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row.is-active { border-color:currentColor; background:rgba(127,127,127,.12); }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-row.is-manual { border-style:dashed; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row > strong { min-width:0; font-size:.75rem; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row input { min-width:0; width:100%; }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-reset { width:28px; height:28px; min-height:28px; margin:0; padding:0; }
+.shadowdark.sheet.item .gt-wb-enhanced-native-heading { margin:0; padding-bottom:3px; border-bottom:1px solid currentColor; }
+.shadowdark.sheet.item .gt-wb-enhanced-native-grid { grid-template-columns:repeat(auto-fit,minmax(min(170px,100%),1fr)); gap:10px; }
+.shadowdark.sheet.item .gt-wb-enhanced-compatibility { display:grid; gap:10px; margin-top:12px; }
+.shadowdark.sheet.item .gt-wb-ds-monster-defenses { padding-top:8px; border-top:1px solid currentColor; }
+.shadowdark.sheet.item .gt-wb-ds-monster-defenses > h3 { margin:0 0 6px; }
+.shadowdark.sheet.item .gt-wb-ds-monster-defenses-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr)); gap:8px; }
+.shadowdark.sheet.item .gt-wb-ds-monster-defenses-fields label { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:8px; }
+.gt-wb-skirmish-rules-config { padding:10px; }
+.gt-wb-skirmish-rules-grid { display:grid; grid-template-columns:minmax(90px,1fr) repeat(4,minmax(80px,1fr)); align-items:center; gap:6px 8px; }
+.gt-wb-skirmish-rules-grid > strong { min-width:0; text-align:center; font-size:.75rem; line-height:1.2; }
+.gt-wb-skirmish-rules-grid > input { min-width:0; width:100%; text-align:center; }
+.gt-wb-skirmish-rules-actions { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:8px; margin-top:14px; }
+
+@media (max-width: 560px) {
+  .shadowdark.sheet.item .gt-wb-skirmish-profile-grid,
+  .shadowdark.sheet.item .gt-wb-skirmish-profile-row { grid-template-columns:minmax(68px,1fr) repeat(3,minmax(64px,1fr)) 28px; gap:4px; }
+  .gt-wb-skirmish-rules-grid { grid-template-columns:minmax(72px,1fr) repeat(4,minmax(58px,1fr)); gap:4px; }
+}

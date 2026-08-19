@@ -51,6 +51,10 @@ export function hasAttackCounter(config) {
   return Boolean(config?.[META_KEY]);
 }
 
+export function clearAttackCounter(config) {
+  if (config) delete config[META_KEY];
+}
+
 export function injectAttackCounter(application, root, config) {
   const metadata = config?.[META_KEY];
   if (!metadata || root.querySelector(`.${COUNTER_CLASS}`)) return;

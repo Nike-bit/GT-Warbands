@@ -137,6 +137,13 @@ Warbands have a defense setting against attacks which lack this property:
 
 The underlying rule is profile-driven rather than hardcoded to the word Magic.
 
+### Optional DS-Monster-Defenses compatibility
+
+Skirmish NPC attacks provide their effective per-Condition Magical state through
+`config.gtWarbands.attackTraits.magical`. DS-Monster-Defenses v0.5.1-compatible
+consumers can honor this transient boolean without changing either module's
+persistent NPC Attack flags.
+
 ## Rolled Effectiveness
 
 Effectiveness is rolled and persists. It is not silently recalculated when ability values change.

@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Abalado",
   "GTWARBANDS.Skirmish.Defeated": "Derrotado",
   "GTWARBANDS.Skirmish.Automatic": "Automática",
+  "GTWARBANDS.Skirmish.Magical": "Mágico",
+  "GTWARBANDS.Skirmish.Nonmagical": "Não mágico",
   "GTWARBANDS.Skirmish.ConditionOverride": "Substituição de condição",
   "GTWARBANDS.Skirmish.OverrideActive": "Manual",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Perfis de condição de escaramuça",

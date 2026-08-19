@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "درهم‌کوبیده",
   "GTWARBANDS.Skirmish.Defeated": "شکست‌خورده",
   "GTWARBANDS.Skirmish.Automatic": "خودکار",
+  "GTWARBANDS.Skirmish.Magical": "جادویی",
+  "GTWARBANDS.Skirmish.Nonmagical": "غیرجادویی",
   "GTWARBANDS.Skirmish.ConditionOverride": "بازنویسی وضعیت",
   "GTWARBANDS.Skirmish.OverrideActive": "دستی",
   "GTWARBANDS.Skirmish.ConditionProfiles": "نمایه‌های وضعیت درگیری",

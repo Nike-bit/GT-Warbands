@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Hırpalanmış",
   "GTWARBANDS.Skirmish.Defeated": "Yenilmiş",
   "GTWARBANDS.Skirmish.Automatic": "Otomatik",
+  "GTWARBANDS.Skirmish.Magical": "Büyülü",
+  "GTWARBANDS.Skirmish.Nonmagical": "Büyüsüz",
   "GTWARBANDS.Skirmish.ConditionOverride": "Durumu elle belirle",
   "GTWARBANDS.Skirmish.OverrideActive": "Elle",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Çatışma durum profilleri",

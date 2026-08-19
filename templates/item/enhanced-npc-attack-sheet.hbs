@@ -15,7 +15,7 @@
 
   <section class="SD-content-body flex1">
     <section class="tab tab-details" data-group="primary" data-tab="tab-details">
-      <div class="gt-wb-enhanced-npc-attack">
+      <div class="gt-wb-enhanced-npc-attack {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
         {{#if gtw.skirmish}}
           <section class="gt-wb-skirmish-profiles">
             <h2>{{gtwLocalize "GTWARBANDS.Skirmish.ConditionProfiles"}}</h2>
@@ -29,127 +29,191 @@
               </select>
             </label>
 
-            <div class="gt-wb-skirmish-profile-grid">
+            <div class="gt-wb-skirmish-profile-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
               <strong>{{gtwLocalize "GTWARBANDS.Skirmish.Condition"}}</strong>
               <strong>{{gtwLocalize "GTWARBANDS.Skirmish.NumAttacks"}}</strong>
               <strong>{{gtwLocalize "GTWARBANDS.Skirmish.AttackBonus"}}</strong>
               <strong>{{gtwLocalize "GTWARBANDS.Skirmish.DamageFormula"}}</strong>
-              <strong></strong>
+              <strong>{{localize "SHADOWDARK.item.effect.predefined_effect.critMultiplier"}}</strong>
+              {{#if gtw.ds.active}}<strong>{{gtw.ds.magicalLabel}}</strong>{{/if}}
 
               {{#each gtw.profiles as |profile|}}
                 <div
-                  class="gt-wb-skirmish-profile-row {{#if profile.active}}is-active{{/if}} {{#if profile.manual}}is-manual{{/if}}"
+                  class="gt-wb-skirmish-profile-row {{#if ../gtw.ds.active}}has-ds-compatibility{{/if}} {{#if profile.active}}is-active{{/if}} {{#if profile.manual}}is-manual{{/if}}"
                   data-condition="{{profile.condition}}"
                 >
                   <strong>{{profile.label}}</strong>
-                  <input
-                    type="number"
-                    min="1"
-                    step="1"
-                    value="{{profile.attackCount}}"
-                    data-profile-field="attackCount"
-                    aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.NumAttacks'}}"
-                    {{#unless ../gtw.canEditProfiles}}disabled{{/unless}}
-                  >
-                  <input
-                    type="text"
-                    value="{{profile.attackBonus}}"
-                    data-profile-field="attackBonus"
-                    aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.AttackBonus'}}"
-                    {{#unless ../gtw.canEditProfiles}}disabled{{/unless}}
-                  >
-                  <input
-                    type="text"
-                    value="{{profile.damage}}"
-                    data-profile-field="damage"
-                    aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.DamageFormula'}}"
-                    {{#unless ../gtw.canEditProfiles}}disabled{{/unless}}
-                  >
-                  <button
-                    type="button"
-                    class="gt-wb-skirmish-profile-reset"
-                    data-action="gtw-reset-profile"
-                    data-tooltip="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
-                    aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
-                    {{#unless profile.canReset}}disabled{{/unless}}
-                  >
-                    <i class="fas fa-rotate-left" aria-hidden="true"></i>
-                  </button>
+                  <div class="gt-wb-skirmish-profile-field {{#if profile.manualFields.attackCount}}is-manual{{/if}}">
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value="{{profile.attackCount}}"
+                      data-profile-field="attackCount"
+                      aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.NumAttacks'}}"
+                      {{#unless profile.editable}}disabled{{/unless}}
+                    >
+                    <button
+                      type="button"
+                      data-action="gtw-reset-profile-field"
+                      data-profile-field="attackCount"
+                      data-tooltip="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                      aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                      {{#unless profile.canResetFields.attackCount}}disabled{{/unless}}
+                    ><i class="fas fa-rotate-left" aria-hidden="true"></i></button>
+                  </div>
+                  <div class="gt-wb-skirmish-profile-field {{#if profile.manualFields.attackBonus}}is-manual{{/if}}">
+                    <input
+                      type="text"
+                      value="{{profile.attackBonus}}"
+                      data-profile-field="attackBonus"
+                      aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.AttackBonus'}}"
+                      {{#unless profile.editable}}disabled{{/unless}}
+                    >
+                    <button
+                      type="button"
+                      data-action="gtw-reset-profile-field"
+                      data-profile-field="attackBonus"
+                      data-tooltip="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                      aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                      {{#unless profile.canResetFields.attackBonus}}disabled{{/unless}}
+                    ><i class="fas fa-rotate-left" aria-hidden="true"></i></button>
+                  </div>
+                  <div class="gt-wb-skirmish-profile-field {{#if profile.manualFields.damage}}is-manual{{/if}}">
+                    <input
+                      type="text"
+                      value="{{profile.damage}}"
+                      data-profile-field="damage"
+                      aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.DamageFormula'}}"
+                      {{#unless profile.editable}}disabled{{/unless}}
+                    >
+                    <button
+                      type="button"
+                      data-action="gtw-reset-profile-field"
+                      data-profile-field="damage"
+                      data-tooltip="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                      aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                      {{#unless profile.canResetFields.damage}}disabled{{/unless}}
+                    ><i class="fas fa-rotate-left" aria-hidden="true"></i></button>
+                  </div>
+                  <div class="gt-wb-skirmish-profile-field {{#if profile.manualFields.criticalMultiplier}}is-manual{{/if}}">
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value="{{profile.criticalMultiplier}}"
+                      data-profile-field="criticalMultiplier"
+                      aria-label="{{localize 'SHADOWDARK.item.effect.predefined_effect.critMultiplier'}}"
+                      {{#unless profile.editable}}disabled{{/unless}}
+                    >
+                    <button
+                      type="button"
+                      data-action="gtw-reset-profile-field"
+                      data-profile-field="criticalMultiplier"
+                      data-tooltip="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                      aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                      {{#unless profile.canResetFields.criticalMultiplier}}disabled{{/unless}}
+                    ><i class="fas fa-rotate-left" aria-hidden="true"></i></button>
+                  </div>
+                  {{#if ../gtw.ds.active}}
+                    <div class="gt-wb-skirmish-profile-field {{#if profile.manualFields.magical}}is-manual{{/if}}">
+                      <select
+                        data-profile-field="magical"
+                        aria-label="{{../gtw.ds.magicalLabel}}"
+                        {{#unless profile.editable}}disabled{{/unless}}
+                      >
+                        {{#each profile.magicalOptions as |option|}}
+                          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                        {{/each}}
+                      </select>
+                      <button
+                        type="button"
+                        data-action="gtw-reset-profile-field"
+                        data-profile-field="magical"
+                        data-tooltip="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                        aria-label="{{gtwLocalize 'GTWARBANDS.Skirmish.ResetAutomatic'}}"
+                        {{#unless profile.canResetFields.magical}}disabled{{/unless}}
+                      ><i class="fas fa-rotate-left" aria-hidden="true"></i></button>
+                    </div>
+                  {{/if}}
                 </div>
               {{/each}}
             </div>
           </section>
+        {{else}}
+          <section class="gt-wb-enhanced-attack-configuration">
+            <h2>{{gtwLocalize "GTWARBANDS.Skirmish.AttackConfiguration"}}</h2>
 
-          <hr class="gt-wb-enhanced-section-divider">
-        {{/if}}
+            <div class="gt-wb-enhanced-attack-config-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
+              <label class="gt-wb-enhanced-field">
+                <strong>{{localize "SHADOWDARK.item.npc_attack_count"}}</strong>
+                <input name="system.attack.num" type="text" value="{{item.system.attack.num}}">
+              </label>
 
-        <section class="gt-wb-enhanced-attack-configuration">
-          <h2>{{gtwLocalize "GTWARBANDS.Skirmish.AttackConfiguration"}}</h2>
+              <label class="gt-wb-enhanced-field">
+                <strong>{{localize "SHADOWDARK.item.npc_attack_bonus"}}</strong>
+                {{numberInput system.bonuses.attackBonus name="system.bonuses.attackBonus" placeholder="1"}}
+              </label>
 
-          <div class="gt-wb-enhanced-attack-config-grid">
-            <label class="gt-wb-enhanced-field">
-              <strong>{{localize "SHADOWDARK.item.npc_attack_count"}}</strong>
-              <input name="system.attack.num" type="text" value="{{item.system.attack.num}}">
-            </label>
+              <label class="gt-wb-enhanced-field">
+                <strong>{{localize "SHADOWDARK.item.npc_attack_damage_formula"}}</strong>
+                <input name="system.damage.value" type="text" value="{{item.system.damage.value}}">
+              </label>
 
-            <label class="gt-wb-enhanced-field">
-              <strong>{{localize "SHADOWDARK.item.npc_attack_damage_formula"}}</strong>
-              <input name="system.damage.value" type="text" value="{{item.system.damage.value}}">
-            </label>
+              <label class="gt-wb-enhanced-field">
+                <strong>{{localize "SHADOWDARK.item.effect.predefined_effect.critMultiplier"}}</strong>
+                {{numberInput system.bonuses.critical.multiplier name="system.bonuses.critical.multiplier" placeholder="2"}}
+              </label>
 
-            <label class="gt-wb-enhanced-field">
-              <strong>{{localize "SHADOWDARK.item.npc_attack_special"}}</strong>
-              <input
-                name="system.damage.special"
-                placeholder="{{localize 'SHADOWDARK.item.npc_attack_special_placeholder'}}"
-                type="text"
-                value="{{item.system.damage.special}}"
-              >
-            </label>
-
-            <label class="gt-wb-enhanced-field">
-              <strong>{{localize "SHADOWDARK.item.npc_attack_bonus"}}</strong>
-              {{numberInput system.bonuses.attackBonus name="system.bonuses.attackBonus" placeholder="1"}}
-            </label>
-
-            <label class="gt-wb-enhanced-field">
-              <strong>{{localize "SHADOWDARK.item.effect.predefined_effect.critMultiplier"}}</strong>
-              {{numberInput system.bonuses.critical.multiplier name="system.bonuses.critical.multiplier" placeholder="2"}}
-            </label>
-
-            <div class="gt-wb-enhanced-field gt-wb-enhanced-ranges">
-              <strong>{{localize "SHADOWDARK.app.npc_attack_ranges.title"}}</strong>
-              <a data-action="npc-attack-ranges">
-                <div class="properties-list">{{npcAttackRangesDisplay}}</div>
-              </a>
-            </div>
-          </div>
-
-          {{#if gtw.ds.active}}
-            <section class="gt-wb-ds-monster-defenses">
-              <h3>{{gtw.ds.title}}</h3>
-              <div class="gt-wb-ds-monster-defenses-fields">
-                <label>
-                  <span>{{gtw.ds.magicalLabel}}</span>
+              {{#if gtw.ds.active}}
+                <label class="gt-wb-enhanced-field gt-wb-ds-magical-field">
+                  <strong>{{gtw.ds.magicalLabel}}</strong>
                   <input
                     type="checkbox"
                     data-gtw-ds-field="magical"
+                    data-gtw-previous="{{gtw.ds.magical}}"
                     {{checked gtw.ds.magical}}
                     {{#unless gtw.ds.editable}}disabled{{/unless}}
                   >
                 </label>
-                <label>
-                  <span>{{gtw.ds.abilityLabel}}</span>
-                  <select data-gtw-ds-field="ability" {{#unless gtw.ds.editable}}disabled{{/unless}}>
-                    {{#each gtw.ds.abilities as |ability|}}
-                      <option value="{{ability.value}}" {{#if ability.selected}}selected{{/if}}>{{ability.label}}</option>
-                    {{/each}}
-                  </select>
-                </label>
-              </div>
-            </section>
+              {{/if}}
+            </div>
+          </section>
+        {{/if}}
+
+        <div class="gt-wb-enhanced-attack-secondary-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
+          <div class="gt-wb-enhanced-field gt-wb-enhanced-ranges">
+            <strong>{{localize "SHADOWDARK.app.npc_attack_ranges.title"}}</strong>
+            <a data-action="npc-attack-ranges">
+              <div class="properties-list">{{npcAttackRangesDisplay}}</div>
+            </a>
+          </div>
+
+          <label class="gt-wb-enhanced-field">
+            <strong>{{localize "SHADOWDARK.item.npc_attack_special"}}</strong>
+            <input
+              name="system.damage.special"
+              placeholder="{{localize 'SHADOWDARK.item.npc_attack_special_placeholder'}}"
+              type="text"
+              value="{{item.system.damage.special}}"
+            >
+          </label>
+
+          {{#if gtw.ds.active}}
+            <label class="gt-wb-enhanced-field gt-wb-ds-ability-field">
+              <strong>{{gtw.ds.abilityLabel}}</strong>
+              <select
+                data-gtw-ds-field="ability"
+                data-gtw-previous="{{gtw.ds.selectedAbility}}"
+                {{#unless gtw.ds.editable}}disabled{{/unless}}
+              >
+                {{#each gtw.ds.abilities as |ability|}}
+                  <option value="{{ability.value}}" {{#if ability.selected}}selected{{/if}}>{{ability.label}}</option>
+                {{/each}}
+              </select>
+            </label>
           {{/if}}
-        </section>
+        </div>
       </div>
     </section>
 

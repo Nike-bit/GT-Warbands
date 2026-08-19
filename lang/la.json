@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Conquassata",
   "GTWARBANDS.Skirmish.Defeated": "Victa",
   "GTWARBANDS.Skirmish.Automatic": "Automatica",
+  "GTWARBANDS.Skirmish.Magical": "Magicus",
+  "GTWARBANDS.Skirmish.Nonmagical": "Non magicus",
   "GTWARBANDS.Skirmish.ConditionOverride": "Condicionis Impositio",
   "GTWARBANDS.Skirmish.OverrideActive": "Imposita",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Formae Condicionis Velitatoriae",

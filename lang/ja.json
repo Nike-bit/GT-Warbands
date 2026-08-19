@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "疲弊",
   "GTWARBANDS.Skirmish.Defeated": "敗北",
   "GTWARBANDS.Skirmish.Automatic": "自動",
+  "GTWARBANDS.Skirmish.Magical": "魔法",
+  "GTWARBANDS.Skirmish.Nonmagical": "非魔法",
   "GTWARBANDS.Skirmish.ConditionOverride": "状態の上書き",
   "GTWARBANDS.Skirmish.OverrideActive": "上書き中",
   "GTWARBANDS.Skirmish.ConditionProfiles": "スカーミッシュ状態プロファイル",

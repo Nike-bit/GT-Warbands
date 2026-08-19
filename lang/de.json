@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Schwer angeschlagen",
   "GTWARBANDS.Skirmish.Defeated": "Besiegt",
   "GTWARBANDS.Skirmish.Automatic": "Automatisch",
+  "GTWARBANDS.Skirmish.Magical": "Magisch",
+  "GTWARBANDS.Skirmish.Nonmagical": "Nichtmagisch",
   "GTWARBANDS.Skirmish.ConditionOverride": "Zustand überschreiben",
   "GTWARBANDS.Skirmish.OverrideActive": "Manuell",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Scharmützel-Zustandsprofile",

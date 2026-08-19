@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Malconcia",
   "GTWARBANDS.Skirmish.Defeated": "Sconfitta",
   "GTWARBANDS.Skirmish.Automatic": "Automatica",
+  "GTWARBANDS.Skirmish.Magical": "Magico",
+  "GTWARBANDS.Skirmish.Nonmagical": "Non magico",
   "GTWARBANDS.Skirmish.ConditionOverride": "Forzatura della condizione",
   "GTWARBANDS.Skirmish.OverrideActive": "Manuale",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Profili di condizione della schermaglia",

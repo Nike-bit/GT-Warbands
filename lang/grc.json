@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Τεθραυσμένον",
   "GTWARBANDS.Skirmish.Defeated": "Ἡττημένον",
   "GTWARBANDS.Skirmish.Automatic": "Αὐτόματον",
+  "GTWARBANDS.Skirmish.Magical": "Μαγική",
+  "GTWARBANDS.Skirmish.Nonmagical": "Οὐ μαγική",
   "GTWARBANDS.Skirmish.ConditionOverride": "Μεταβολὴ Καταστάσεως",
   "GTWARBANDS.Skirmish.OverrideActive": "Μεταβολή",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Τύποι Καταστάσεως Ἀκροβολισμοῦ",

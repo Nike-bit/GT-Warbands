@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "重创",
   "GTWARBANDS.Skirmish.Defeated": "被击败",
   "GTWARBANDS.Skirmish.Automatic": "自动",
+  "GTWARBANDS.Skirmish.Magical": "魔法",
+  "GTWARBANDS.Skirmish.Nonmagical": "非魔法",
   "GTWARBANDS.Skirmish.ConditionOverride": "状态覆盖",
   "GTWARBANDS.Skirmish.OverrideActive": "已覆盖",
   "GTWARBANDS.Skirmish.ConditionProfiles": "遭遇战状态配置",

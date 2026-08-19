@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Battered",
   "GTWARBANDS.Skirmish.Defeated": "Defeated",
   "GTWARBANDS.Skirmish.Automatic": "Automatic",
+  "GTWARBANDS.Skirmish.Magical": "Magical",
+  "GTWARBANDS.Skirmish.Nonmagical": "Nonmagical",
   "GTWARBANDS.Skirmish.ConditionOverride": "Condition Override",
   "GTWARBANDS.Skirmish.OverrideActive": "Override",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Skirmish Condition Profiles",

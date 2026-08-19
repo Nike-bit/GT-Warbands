@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Потрёпанный",
   "GTWARBANDS.Skirmish.Defeated": "Побеждённый",
   "GTWARBANDS.Skirmish.Automatic": "Автоматически",
+  "GTWARBANDS.Skirmish.Magical": "Магическая",
+  "GTWARBANDS.Skirmish.Nonmagical": "Немагическая",
   "GTWARBANDS.Skirmish.ConditionOverride": "Ручной выбор состояния",
   "GTWARBANDS.Skirmish.OverrideActive": "Вручную",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Профили состояния для схватки",

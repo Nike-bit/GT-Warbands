@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Σφυροκοπημένη",
   "GTWARBANDS.Skirmish.Defeated": "Ηττημένη",
   "GTWARBANDS.Skirmish.Automatic": "Αυτόματα",
+  "GTWARBANDS.Skirmish.Magical": "Μαγική",
+  "GTWARBANDS.Skirmish.Nonmagical": "Μη μαγική",
   "GTWARBANDS.Skirmish.ConditionOverride": "Χειροκίνητη Παράκαμψη Κατάστασης",
   "GTWARBANDS.Skirmish.OverrideActive": "Παράκαμψη",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Προφίλ Κατάστασης Αψιμαχίας",

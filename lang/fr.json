@@ -19,6 +19,8 @@
   "GTWARBANDS.Skirmish.Battered": "Malmenée",
   "GTWARBANDS.Skirmish.Defeated": "Vaincue",
   "GTWARBANDS.Skirmish.Automatic": "Automatique",
+  "GTWARBANDS.Skirmish.Magical": "Magique",
+  "GTWARBANDS.Skirmish.Nonmagical": "Non magique",
   "GTWARBANDS.Skirmish.ConditionOverride": "Forçage de l’état",
   "GTWARBANDS.Skirmish.OverrideActive": "Manuel",
   "GTWARBANDS.Skirmish.ConditionProfiles": "Profils d’état d’escarmouche",

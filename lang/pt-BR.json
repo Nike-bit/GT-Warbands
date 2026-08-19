@@ -43,6 +43,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Não foi possível salvar os perfis de condição de escaramuça.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Fórmula de dano de escaramuça inválida: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Um Bando de Guerra de Escaramuça derrotado não pode atacar.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Não foi possível concluir os ataques selecionados.",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheets": "Fichas de Ataque de NPC Aprimoradas",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheetsHint": "Adiciona o seletor de quantidade de ataques e o layout de compatibilidade do GT-Warbands às fichas normais de Ataque de NPC do Shadowdark, sem modificadores de escaramuça.",
   "GTWARBANDS.Skirmish.AttackConfiguration": "Configuração de Ataque de Escaramuça",

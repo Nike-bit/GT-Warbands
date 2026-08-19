@@ -43,6 +43,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Не удалось сохранить профили состояния для схватки.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Недопустимая формула урона для схватки: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Побеждённый отряд для схватки не может атаковать.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Не удалось выполнить выбранные атаки.",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheets": "Расширенные листы атак NPC",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheetsHint": "Добавляет выбор количества атак и совместимую разметку GT-Warbands в обычные листы атак NPC Shadowdark без модификаторов схватки.",
   "GTWARBANDS.Skirmish.AttackConfiguration": "Настройка атаки для схватки",

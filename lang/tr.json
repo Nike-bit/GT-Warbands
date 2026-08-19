@@ -43,6 +43,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Çatışma durum profilleri kaydedilemedi.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Geçersiz çatışma hasar formülü: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Yenilmiş bir Çatışma Savaş Birliği saldıramaz.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Seçilen saldırılar tamamlanamadı.",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheets": "Geliştirilmiş NPC Saldırı Sayfaları",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheetsHint": "Normal Shadowdark NPC Saldırı sayfalarına, çatışma değiştiricileri olmadan GT-Warbands saldırı adedi seçicisini ve uyumluluk düzenini ekler.",
   "GTWARBANDS.Skirmish.AttackConfiguration": "Çatışma Saldırısı Yapılandırması",

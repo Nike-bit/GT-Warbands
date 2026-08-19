@@ -43,6 +43,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Nie udało się zapisać profili stanu potyczki.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Nieprawidłowa formuła obrażeń potyczki: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Pokonany oddział potyczkowy nie może atakować.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Nie udało się wykonać wybranych ataków.",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheets": "Rozszerzone karty ataków NPC",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheetsHint": "Dodaje wybór liczby ataków i układ zgodności GT-Warbands do zwykłych kart Ataku NPC Shadowdark, bez modyfikatorów potyczkowych.",
   "GTWARBANDS.Skirmish.AttackConfiguration": "Konfiguracja ataku potyczkowego",

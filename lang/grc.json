@@ -62,6 +62,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Οἱ τύποι τῆς καταστάσεως οὐκ ἐσώθησαν.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Ἄκυρος τύπος βλάβης ἀκροβολισμοῦ: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Στράτευμα Ἀκροβολισμοῦ ἡττημένον προσβάλλειν οὐ δύναται.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Αἱ αἱρεθεῖσαι προσβολαὶ τελεσθῆναι οὐκ ἠδυνήθησαν.",
   "GTWARBANDS.Generic.Ability1A": "Δύναμις 1A",
   "GTWARBANDS.Generic.Ability2A": "Δύναμις 2A",
   "GTWARBANDS.Generic.Ability1B": "Δύναμις 1B",

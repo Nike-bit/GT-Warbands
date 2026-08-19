@@ -43,6 +43,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Formae condicionis velitatoriae servari non potuerunt.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Formula damni velitatorii invalida est: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Cohors Velitatoria victa impetum facere non potest.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Impetus selecti perfici non potuerunt.",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheets": "Schedae Impetus NPC Amplificatae",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheetsHint": "Selectorem numeri impetuum et structuram convenientiae GT-Warbands schedis ordinariis Impetus NPC Shadowdark addit, sine mutationibus velitatoriis.",
   "GTWARBANDS.Skirmish.AttackConfiguration": "Configuratio Impetus Velitatorii",

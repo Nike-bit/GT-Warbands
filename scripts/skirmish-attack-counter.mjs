@@ -3,7 +3,6 @@ import { format as formatGtw, localize as localizeGtw } from "./localization.mjs
 const MODULE_ID = "gt-warbands";
 const COUNTER_CLASS = "gt-wb-attack-counter";
 const META_KEY = "gtWarbandsAttackCounter";
-let wrapperRegistered = false;
 
 function L(key) {
   return localizeGtw(key);
@@ -46,6 +45,10 @@ export function setAttackCounterMaximum(config, maximum) {
     maximum: max,
     selected: clampSelected(previous?.selected ?? max, max)
   };
+}
+
+export function hasAttackCounter(config) {
+  return Boolean(config?.[META_KEY]);
 }
 
 export function injectAttackCounter(application, root, config) {
@@ -110,62 +113,20 @@ export function injectAttackCounter(application, root, config) {
   form?.addEventListener("submit", () => updateCounterUi(control, config, input.value), { capture: true });
 }
 
-async function rollSelectedAttacks(wrapped, config, args) {
+export async function executeSelectedAttacks(config, executor = globalThis.shadowdark?.dice?.rollFromConfig) {
   const metadata = config?.[META_KEY];
-  const selected = clampSelected(metadata?.selected, metadata?.maximum);
-  if (!metadata || selected <= 1 || metadata.executing) return wrapped(config, ...args);
+  if (!metadata || typeof executor !== "function") return { handled: false, count: 0, results: [] };
 
+  const selected = clampSelected(metadata.selected, metadata.maximum);
   const pristine = foundry.utils.deepClone(config);
-  let result;
+  const results = [];
   for (let index = 0; index < selected; index += 1) {
     const attackConfig = foundry.utils.deepClone(pristine);
-    attackConfig[META_KEY].executing = true;
     attackConfig[META_KEY].attackIndex = index + 1;
-    result = await wrapped(attackConfig, ...args);
+    attackConfig[META_KEY].selected = selected;
+    results.push(await executor(attackConfig));
   }
-  return result;
+  return { handled: true, count: selected, results };
 }
 
-function registerDirectWrapper() {
-  const dice = globalThis.shadowdark?.dice;
-  if (!dice?.rollFromConfig || dice.rollFromConfig.__gtWarbandsWrapped) return false;
-
-  const original = dice.rollFromConfig;
-  const replacement = async function(config, ...args) {
-    return rollSelectedAttacks((nextConfig, ...nextArgs) => original.call(this, nextConfig, ...nextArgs), config, args);
-  };
-  replacement.__gtWarbandsWrapped = true;
-  replacement.__gtWarbandsOriginal = original;
-  dice.rollFromConfig = replacement;
-  return dice.rollFromConfig === replacement;
-}
-
-export function registerAttackCounterRollWrapper() {
-  if (wrapperRegistered) return;
-
-  const libWrapperModule = game.modules.get("lib-wrapper");
-  if (libWrapperModule?.active && globalThis.libWrapper?.register) {
-    try {
-      globalThis.libWrapper.register(
-        MODULE_ID,
-        "shadowdark.dice.rollFromConfig",
-        function(wrapped, config, ...args) {
-          return rollSelectedAttacks((nextConfig, ...nextArgs) => wrapped(nextConfig, ...nextArgs), config, args);
-        },
-        "WRAPPER"
-      );
-      wrapperRegistered = true;
-      return;
-    }
-    catch (error) {
-      console.warn(`${MODULE_ID} | libWrapper registration failed; using the guarded direct wrapper.`, error);
-    }
-  }
-
-  wrapperRegistered = registerDirectWrapper();
-  if (!wrapperRegistered) {
-    console.error(`${MODULE_ID} | Shadowdark rollFromConfig was unavailable; multi-attack execution could not be registered.`);
-  }
-}
-
-export const attackCounterTestApi = Object.freeze({ rollSelectedAttacks });
+export const attackCounterTestApi = Object.freeze({ executeSelectedAttacks, clampSelected });

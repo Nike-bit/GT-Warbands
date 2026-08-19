@@ -2,7 +2,6 @@ import { localize as localizeGtw } from "./localization.mjs";
 
 const MODULE_ID = "gt-warbands";
 const DS_MODULE_ID = "ds-monster-defenses";
-const CONTROLS_CLASS = "gt-wb-ds-monster-defenses";
 
 function L(key) {
   return localizeGtw(key);
@@ -20,35 +19,53 @@ export function dsMonsterDefensesActive() {
   return Boolean(game.modules.get(DS_MODULE_ID)?.active);
 }
 
-export function injectDsMonsterDefensesControls({ sheet, item, container }) {
-  if (!dsMonsterDefensesActive() || container.querySelector(`.${CONTROLS_CLASS}`)) return;
+export function getDsMonsterDefensesSheetContext(item, editable) {
+  if (!dsMonsterDefensesActive()) return { active: false };
 
-  const editable = Boolean(sheet?.isEditable && item?.isOwner);
   const traits = item.getFlag(DS_MODULE_ID, "attackTraits") ?? {};
-  const section = document.createElement("section");
-  section.classList.add(CONTROLS_CLASS);
-  section.dataset.moduleVersion = game.modules.get(DS_MODULE_ID)?.version ?? "";
+  const selectedAbility = ["any", "str", "dex"].includes(traits.ability) ? traits.ability : "any";
+  return {
+    active: true,
+    editable: Boolean(editable),
+    title: dsLocalize(
+      ["DSMONSTERDEFENSES.AttackTraits.Title", "DSMD.AttackTraits.Title"],
+      "GTWARBANDS.Compatibility.DsMonsterDefenses"
+    ),
+    magicalLabel: dsLocalize(
+      ["DSMONSTERDEFENSES.AttackTraits.Magical", "DSMD.AttackTraits.Magical"],
+      "GTWARBANDS.Compatibility.MagicalAttack"
+    ),
+    magical: Boolean(traits.magical),
+    abilityLabel: dsLocalize(
+      ["DSMONSTERDEFENSES.AttackTraits.Ability", "DSMD.AttackTraits.Ability"],
+      "GTWARBANDS.Compatibility.AttackAbility"
+    ),
+    abilities: [
+      {
+        value: "any",
+        label: dsLocalize(["DSMONSTERDEFENSES.Ability.Any", "DSMD.Ability.Any"], "GTWARBANDS.Compatibility.Any"),
+        selected: selectedAbility === "any"
+      },
+      {
+        value: "str",
+        label: dsLocalize(["DSMONSTERDEFENSES.Ability.Strength", "DSMD.Ability.Strength"], "GTWARBANDS.Compatibility.Strength"),
+        selected: selectedAbility === "str"
+      },
+      {
+        value: "dex",
+        label: dsLocalize(["DSMONSTERDEFENSES.Ability.Dexterity", "DSMD.Ability.Dexterity"], "GTWARBANDS.Compatibility.Dexterity"),
+        selected: selectedAbility === "dex"
+      }
+    ]
+  };
+}
 
-  const heading = document.createElement("h3");
-  heading.textContent = dsLocalize(
-    ["DSMONSTERDEFENSES.AttackTraits.Title", "DSMD.AttackTraits.Title"],
-    "GTWARBANDS.Compatibility.DsMonsterDefenses"
-  );
+export function activateDsMonsterDefensesSheetListeners({ sheet, item, root }) {
+  if (!dsMonsterDefensesActive()) return;
+  const editable = Boolean(sheet?.isEditable && item?.isOwner);
 
-  const fields = document.createElement("div");
-  fields.classList.add("gt-wb-ds-monster-defenses-fields");
-
-  const magicalLabel = document.createElement("label");
-  const magicalText = document.createElement("span");
-  magicalText.textContent = dsLocalize(
-    ["DSMONSTERDEFENSES.AttackTraits.Magical", "DSMD.AttackTraits.Magical"],
-    "GTWARBANDS.Compatibility.MagicalAttack"
-  );
-  const magical = document.createElement("input");
-  magical.type = "checkbox";
-  magical.checked = Boolean(traits.magical);
-  magical.disabled = !editable;
-  magical.addEventListener("change", async () => {
+  const magical = root.querySelector('[data-gtw-ds-field="magical"]');
+  magical?.addEventListener("change", async () => {
     const previous = !magical.checked;
     magical.disabled = true;
     try {
@@ -62,29 +79,10 @@ export function injectDsMonsterDefensesControls({ sheet, item, container }) {
       magical.disabled = !editable;
     }
   });
-  magicalLabel.append(magicalText, magical);
 
-  const abilityLabel = document.createElement("label");
-  const abilityText = document.createElement("span");
-  abilityText.textContent = dsLocalize(
-    ["DSMONSTERDEFENSES.AttackTraits.Ability", "DSMD.AttackTraits.Ability"],
-    "GTWARBANDS.Compatibility.AttackAbility"
-  );
-  const ability = document.createElement("select");
-  ability.disabled = !editable;
-  for (const [value, candidates, fallback] of [
-    ["any", ["DSMONSTERDEFENSES.Ability.Any", "DSMD.Ability.Any"], "GTWARBANDS.Compatibility.Any"],
-    ["str", ["DSMONSTERDEFENSES.Ability.Strength", "DSMD.Ability.Strength"], "GTWARBANDS.Compatibility.Strength"],
-    ["dex", ["DSMONSTERDEFENSES.Ability.Dexterity", "DSMD.Ability.Dexterity"], "GTWARBANDS.Compatibility.Dexterity"]
-  ]) {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = dsLocalize(candidates, fallback);
-    ability.append(option);
-  }
-  ability.value = ["any", "str", "dex"].includes(traits.ability) ? traits.ability : "any";
-  ability.addEventListener("change", async () => {
-    const previous = ["any", "str", "dex"].includes(traits.ability) ? traits.ability : "any";
+  const ability = root.querySelector('[data-gtw-ds-field="ability"]');
+  ability?.addEventListener("change", async () => {
+    const previous = ability.querySelector("option[selected]")?.value ?? "any";
     ability.disabled = true;
     try {
       await item.update({ [`flags.${DS_MODULE_ID}.attackTraits.ability`]: ability.value });
@@ -97,9 +95,4 @@ export function injectDsMonsterDefensesControls({ sheet, item, container }) {
       ability.disabled = !editable;
     }
   });
-  abilityLabel.append(abilityText, ability);
-
-  fields.append(magicalLabel, abilityLabel);
-  section.append(heading, fields);
-  container.append(section);
 }

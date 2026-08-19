@@ -62,6 +62,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Non è stato possibile salvare i profili di condizione della schermaglia.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Formula dei danni da schermaglia non valida: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Una banda da guerra da schermaglia sconfitta non può attaccare.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Non è stato possibile completare gli attacchi selezionati.",
   "GTWARBANDS.Generic.Ability1A": "Capacità 1A",
   "GTWARBANDS.Generic.Ability2A": "Capacità 2A",
   "GTWARBANDS.Generic.Ability1B": "Capacità 1B",

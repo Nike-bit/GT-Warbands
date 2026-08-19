@@ -43,6 +43,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "スカーミッシュ状態プロファイルを保存できませんでした。",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "スカーミッシュのダメージ式が無効です：{formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "敗北したスカーミッシュ戦団は攻撃できません。",
+  "GTWARBANDS.Notification.MultiAttackFailed": "選択した攻撃を完了できませんでした。",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheets": "拡張NPC攻撃シート",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheetsHint": "通常のShadowdark NPC攻撃シートにGT-Warbandsの攻撃数選択機能と互換性用レイアウトを追加します。スカーミッシュ補正は適用しません。",
   "GTWARBANDS.Skirmish.AttackConfiguration": "スカーミッシュ攻撃設定",

@@ -43,6 +43,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "无法保存遭遇战状态配置。",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "无效的遭遇战伤害公式：{formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "被击败的遭遇战战团无法攻击。",
+  "GTWARBANDS.Notification.MultiAttackFailed": "无法完成所选攻击。",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheets": "增强 NPC 攻击卡",
   "GTWARBANDS.Settings.EnhancedNpcAttackSheetsHint": "为普通 Shadowdark NPC 攻击卡添加 GT-Warbands 的攻击数量选择器和兼容布局，但不应用遭遇战调整值。",
   "GTWARBANDS.Skirmish.AttackConfiguration": "遭遇战攻击配置",

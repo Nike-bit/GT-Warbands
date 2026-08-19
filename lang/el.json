@@ -62,6 +62,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Δεν ήταν δυνατή η αποθήκευση των προφίλ Κατάστασης Αψιμαχίας.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Μη έγκυρος τύπος ζημιάς Αψιμαχίας: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Μια ηττημένη Πολεμική Μονάδα Αψιμαχίας δεν μπορεί να επιτεθεί.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Οι επιλεγμένες επιθέσεις δεν μπόρεσαν να ολοκληρωθούν.",
   "GTWARBANDS.Generic.Ability1A": "Ικανότητα 1A",
   "GTWARBANDS.Generic.Ability2A": "Ικανότητα 2A",
   "GTWARBANDS.Generic.Ability1B": "Ικανότητα 1B",

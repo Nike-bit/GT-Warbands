@@ -62,6 +62,7 @@
   "GTWARBANDS.Notification.SkirmishProfilesUpdateFailed": "Die Scharmützel-Zustandsprofile konnten nicht gespeichert werden.",
   "GTWARBANDS.Notification.SkirmishInvalidDamage": "Ungültige Scharmützel-Schadensformel: {formula}",
   "GTWARBANDS.Notification.SkirmishDefeatedCannotAttack": "Ein besiegter Scharmützel-Kriegsverband kann nicht angreifen.",
+  "GTWARBANDS.Notification.MultiAttackFailed": "Die ausgewählten Angriffe konnten nicht abgeschlossen werden.",
   "GTWARBANDS.Generic.Ability1A": "Fähigkeit 1A",
   "GTWARBANDS.Generic.Ability2A": "Fähigkeit 2A",
   "GTWARBANDS.Generic.Ability1B": "Fähigkeit 1B",

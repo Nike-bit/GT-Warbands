@@ -87,7 +87,7 @@
 .shadowdark.sheet.item .gt-wb-skirmish-profile-field button { width:24px; height:24px; min-height:24px; margin:0; padding:0; font-size:.7rem; }
 .shadowdark.sheet.item .gt-wb-enhanced-attack-config-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:start; gap:12px 14px; }
 .shadowdark.sheet.item .gt-wb-enhanced-attack-config-grid.has-ds-compatibility { grid-template-columns:repeat(5,minmax(0,1fr)); }
-.shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:12px 14px; padding-top:10px; border-top:1px solid currentColor; }
+.shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:12px 14px; }
 .shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid.has-ds-compatibility { grid-template-columns:repeat(3,minmax(0,1fr)); }
 .shadowdark.sheet.item .gt-wb-enhanced-field { display:grid; align-content:start; gap:5px; min-width:0; margin:0; }
 .shadowdark.sheet.item .gt-wb-enhanced-field > strong { min-width:0; font-size:.75rem; line-height:1.2; }

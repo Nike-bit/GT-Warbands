@@ -222,6 +222,19 @@ function refreshRegisteredLabels() {
   });
 }
 
+function isNpcSkirmishActive(actor) {
+  if (game.system.id !== "shadowdark" || actor?.type !== "NPC") return false;
+  try {
+    const stored = actor.getFlag(MODULE_ID, "isSkirmishWarband");
+    return typeof stored === "boolean"
+      ? stored
+      : Boolean(game.settings.get(MODULE_ID, "enableSkirmishNpcSupport"));
+  }
+  catch (_error) {
+    return false;
+  }
+}
+
 function shouldRerenderApplication(application) {
   if (["gt-warbands-profile-config", "gt-warbands-skirmish-rules-config"].includes(application?.id)
     || ["gt-warbands-profile-config", "gt-warbands-skirmish-rules-config"].includes(application?.options?.id)) {
@@ -236,13 +249,7 @@ function shouldRerenderApplication(application) {
     ?? (application?.document?.documentName === "Actor" ? application.document : null);
   if (actor?.documentName === "Actor") {
     if (actor.type === `${MODULE_ID}.warband`) return true;
-    if (game.system.id !== "shadowdark" || actor.type !== "NPC") return false;
-    try {
-      return Boolean(game.settings.get(MODULE_ID, "enableSkirmishNpcSupport"));
-    }
-    catch (_error) {
-      return false;
-    }
+    return game.system.id === "shadowdark" && actor.type === "NPC";
   }
 
   const item = application?.item ?? (application?.document?.documentName === "Item" ? application.document : null);
@@ -250,9 +257,8 @@ function shouldRerenderApplication(application) {
   if (game.system.id !== "shadowdark" || item?.type !== "NPC Attack") return false;
   try {
     if (item.parent?.type !== "NPC") return false;
-    const skirmish = Boolean(game.settings.get(MODULE_ID, "enableSkirmishNpcSupport"))
-      && Boolean(item.parent.getFlag(MODULE_ID, "isSkirmishWarband"));
-    return skirmish || Boolean(game.settings.get(MODULE_ID, "enhancedNpcAttackSheets"));
+    return isNpcSkirmishActive(item.parent)
+      || Boolean(game.settings.get(MODULE_ID, "enhancedNpcAttackSheets"));
   }
   catch (_error) {
     return false;

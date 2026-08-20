@@ -74,8 +74,19 @@ function isShadowdarkNpcAttack(item) {
   return game.system.id === SHADOWDARK_SYSTEM_ID && item?.type === SHADOWDARK_NPC_ATTACK_TYPE;
 }
 
-function isSkirmishEnabled() { return Boolean(game.settings.get(MODULE_ID, SKIRMISH_SETTING)); }
-function isSkirmishWarband(actor) { return isShadowdarkNpc(actor) && Boolean(actor.getFlag(MODULE_ID, SKIRMISH_FLAG)); }
+function isSingleNpcSkirmishDefaultEnabled() {
+  return Boolean(game.settings.get(MODULE_ID, SKIRMISH_SETTING));
+}
+
+function getSkirmishActorOverride(actor) {
+  const stored = actor?.getFlag(MODULE_ID, SKIRMISH_FLAG);
+  return typeof stored === "boolean" ? stored : null;
+}
+
+function isSkirmishWarband(actor) {
+  if (!isShadowdarkNpc(actor)) return false;
+  return getSkirmishActorOverride(actor) ?? isSingleNpcSkirmishDefaultEnabled();
+}
 function mayEdit(sheet, document) { return Boolean(sheet?.isEditable && document?.isOwner); }
 
 function deriveAutomaticCondition(actor) {
@@ -284,7 +295,7 @@ function resolveConfigAttack(config) {
   const item = resolveUuidSync(config?.itemUuid);
   const actor = item?.parent;
   if (!isShadowdarkNpcAttack(item) || !isShadowdarkNpc(actor)) return null;
-  const skirmish = isSkirmishEnabled() && isSkirmishWarband(actor);
+  const skirmish = isSkirmishWarband(actor);
   if (!skirmish && !enhancedNpcAttackSheetsEnabled()) return null;
   const condition = skirmish ? getActiveCondition(actor) : null;
   const effective = skirmish ? deriveEffectiveAttack(item, condition) : nativeAttackProfile(item);
@@ -465,7 +476,7 @@ function interceptSkirmishHpRoll(root, actor) {
   hpButton.dataset.gtwSkirmishHpBound = "true";
   hpButton.dataset.tooltip = L("GTWARBANDS.Skirmish.HpRoll");
   hpButton.addEventListener("click", event => {
-    if (!isSkirmishEnabled() || !isSkirmishWarband(actor)) return;
+    if (!isSkirmishWarband(actor)) return;
     event.preventDefault();
     event.stopImmediatePropagation();
     void rollSkirmishHp(actor).catch(error => {
@@ -477,7 +488,7 @@ function interceptSkirmishHpRoll(root, actor) {
 
 async function injectSkirmishActorUi(sheet, html) {
   const actor = getSheetActor(sheet);
-  if (!isShadowdarkNpc(actor) || !isSkirmishEnabled()) return;
+  if (!isShadowdarkNpc(actor)) return;
   const root = getHtmlRoot(html);
   if (!root) return;
   injectSkirmishToggle(sheet, root, actor);
@@ -506,13 +517,13 @@ async function clearResolvedOverrideField(item, condition, field) {
 function shouldUseEnhancedNpcAttackSheet(item) {
   const actor = item?.parent;
   if (!isShadowdarkNpcAttack(item) || !isShadowdarkNpc(actor)) return false;
-  const skirmish = isSkirmishEnabled() && isSkirmishWarband(actor);
+  const skirmish = isSkirmishWarband(actor);
   return skirmish || enhancedNpcAttackSheetsEnabled();
 }
 
 function buildEnhancedNpcAttackContext(sheet, item) {
   const actor = item.parent;
-  const skirmish = isSkirmishEnabled() && isSkirmishWarband(actor);
+  const skirmish = isSkirmishWarband(actor);
   const editable = mayEdit(sheet, item) && actor.isOwner;
   const current = getConditionOverride(actor);
   const activeCondition = getActiveCondition(actor);
@@ -654,7 +665,7 @@ function activateEnhancedNpcAttackListeners(sheet, html) {
   const root = getHtmlRoot(html);
   if (!root) return;
   const actor = item.parent;
-  if (isSkirmishEnabled() && isSkirmishWarband(actor)) {
+  if (isSkirmishWarband(actor)) {
     activateConditionOverrideListener(sheet, root, actor);
     activateProfileOverrideListeners(sheet, item, root, actor);
   }
@@ -772,6 +783,9 @@ export function registerSkirmishHooks() {
 }
 
 export const skirmishTestApi = Object.freeze({
+  isSingleNpcSkirmishDefaultEnabled,
+  getSkirmishActorOverride,
+  isSkirmishWarband,
   deriveAutomaticCondition,
   parseSimpleDamage,
   transformDamageFormula,

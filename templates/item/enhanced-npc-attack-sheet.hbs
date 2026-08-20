@@ -1,4 +1,8 @@
-<form class="{{cssClass}} flexcol gt-wb-enhanced-npc-attack-sheet" autocomplete="off">
+<form
+  class="{{cssClass}} flexcol gt-wb-enhanced-npc-attack-sheet"
+  autocomplete="off"
+  data-gt-warbands-enhanced-npc-attack="true"
+>
   {{> items/_partials/header }}
 
   <nav class="SD-nav flex0" data-group="primary">
@@ -16,8 +20,8 @@
   <section class="SD-content-body flex1">
     <section class="tab tab-details" data-group="primary" data-tab="tab-details">
       <div class="gt-wb-enhanced-npc-attack {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
+        <section class="gt-wb-enhanced-attack-block {{#if gtw.skirmish}}gt-wb-skirmish-profiles{{else}}gt-wb-enhanced-attack-configuration{{/if}}">
         {{#if gtw.skirmish}}
-          <section class="gt-wb-skirmish-profiles">
             <h2>{{gtwLocalize "GTWARBANDS.Skirmish.ConditionProfiles"}}</h2>
 
             <label class="gt-wb-skirmish-condition-control">
@@ -116,16 +120,15 @@
                     ><i class="fas fa-rotate-left" aria-hidden="true"></i></button>
                   </div>
                   {{#if ../gtw.ds.active}}
-                    <div class="gt-wb-skirmish-profile-field {{#if profile.manualFields.magical}}is-manual{{/if}}">
-                      <select
+                    <div class="gt-wb-skirmish-profile-field gt-wb-skirmish-magical-field {{#if profile.manualFields.magical}}is-manual{{/if}}">
+                      <input
+                        type="checkbox"
                         data-profile-field="magical"
+                        data-gtw-previous="{{profile.magical}}"
                         aria-label="{{../gtw.ds.magicalLabel}}"
+                        {{checked profile.magical}}
                         {{#unless profile.editable}}disabled{{/unless}}
                       >
-                        {{#each profile.magicalOptions as |option|}}
-                          <option value="{{option.value}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-                        {{/each}}
-                      </select>
                       <button
                         type="button"
                         data-action="gtw-reset-profile-field"
@@ -139,9 +142,7 @@
                 </div>
               {{/each}}
             </div>
-          </section>
         {{else}}
-          <section class="gt-wb-enhanced-attack-configuration">
             <h2>{{gtwLocalize "GTWARBANDS.Skirmish.AttackConfiguration"}}</h2>
 
             <div class="gt-wb-enhanced-attack-config-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
@@ -178,42 +179,42 @@
                 </label>
               {{/if}}
             </div>
-          </section>
         {{/if}}
 
-        <div class="gt-wb-enhanced-attack-secondary-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
-          <div class="gt-wb-enhanced-field gt-wb-enhanced-ranges">
-            <strong>{{localize "SHADOWDARK.app.npc_attack_ranges.title"}}</strong>
-            <a data-action="npc-attack-ranges">
-              <div class="properties-list">{{npcAttackRangesDisplay}}</div>
-            </a>
-          </div>
+          <div class="gt-wb-enhanced-attack-secondary-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
+            <div class="gt-wb-enhanced-field gt-wb-enhanced-ranges">
+              <strong>{{localize "SHADOWDARK.app.npc_attack_ranges.title"}}</strong>
+              <a data-action="npc-attack-ranges">
+                <div class="properties-list">{{npcAttackRangesDisplay}}</div>
+              </a>
+            </div>
 
-          <label class="gt-wb-enhanced-field">
-            <strong>{{localize "SHADOWDARK.item.npc_attack_special"}}</strong>
-            <input
-              name="system.damage.special"
-              placeholder="{{localize 'SHADOWDARK.item.npc_attack_special_placeholder'}}"
-              type="text"
-              value="{{item.system.damage.special}}"
-            >
-          </label>
-
-          {{#if gtw.ds.active}}
-            <label class="gt-wb-enhanced-field gt-wb-ds-ability-field">
-              <strong>{{gtw.ds.abilityLabel}}</strong>
-              <select
-                data-gtw-ds-field="ability"
-                data-gtw-previous="{{gtw.ds.selectedAbility}}"
-                {{#unless gtw.ds.editable}}disabled{{/unless}}
+            <label class="gt-wb-enhanced-field">
+              <strong>{{localize "SHADOWDARK.item.npc_attack_special"}}</strong>
+              <input
+                name="system.damage.special"
+                placeholder="{{localize 'SHADOWDARK.item.npc_attack_special_placeholder'}}"
+                type="text"
+                value="{{item.system.damage.special}}"
               >
-                {{#each gtw.ds.abilities as |ability|}}
-                  <option value="{{ability.value}}" {{#if ability.selected}}selected{{/if}}>{{ability.label}}</option>
-                {{/each}}
-              </select>
             </label>
-          {{/if}}
-        </div>
+
+            {{#if gtw.ds.active}}
+              <label class="gt-wb-enhanced-field gt-wb-ds-ability-field">
+                <strong>{{gtw.ds.abilityLabel}}</strong>
+                <select
+                  data-gtw-ds-field="ability"
+                  data-gtw-previous="{{gtw.ds.selectedAbility}}"
+                  {{#unless gtw.ds.editable}}disabled{{/unless}}
+                >
+                  {{#each gtw.ds.abilities as |ability|}}
+                    <option value="{{ability.value}}" {{#if ability.selected}}selected{{/if}}>{{ability.label}}</option>
+                  {{/each}}
+                </select>
+              </label>
+            {{/if}}
+          </div>
+        </section>
       </div>
     </section>
 

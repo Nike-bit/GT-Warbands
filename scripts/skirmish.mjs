@@ -543,23 +543,7 @@ function buildEnhancedNpcAttackContext(sheet, item) {
         attackBonus: signedBonus(effective.attackBonus),
         damage: effective.damage,
         criticalMultiplier: effective.criticalMultiplier,
-        magicalOptions: ds.active ? [
-          {
-            value: "automatic",
-            label: L("GTWARBANDS.Skirmish.Automatic"),
-            selected: !manualFields.magical
-          },
-          {
-            value: "true",
-            label: L("GTWARBANDS.Skirmish.Magical"),
-            selected: manualFields.magical && effective.magical === true
-          },
-          {
-            value: "false",
-            label: L("GTWARBANDS.Skirmish.Nonmagical"),
-            selected: manualFields.magical && effective.magical === false
-          }
-        ] : [],
+        magical: ds.active && effective.magical === true,
         manualFields,
         canResetFields,
         active: condition === activeCondition,
@@ -603,7 +587,6 @@ function activateProfileOverrideListeners(sheet, item, root, actor) {
       const effective = deriveEffectiveAttack(item, condition);
       const field = input.dataset.profileField;
       let value;
-      let clear = false;
       if (field === "damage") {
         value = String(input.value ?? "").trim();
         const invalidFormula = typeof Roll !== "undefined" && typeof Roll.validate === "function" && !Roll.validate(value);
@@ -614,8 +597,7 @@ function activateProfileOverrideListeners(sheet, item, root, actor) {
         }
       }
       else if (field === "magical") {
-        clear = input.value === "automatic";
-        value = input.value === "true";
+        value = input.checked;
       }
       else {
         value = Number(input.value);
@@ -633,11 +615,11 @@ function activateProfileOverrideListeners(sheet, item, root, actor) {
 
       input.disabled = true;
       try {
-        if (clear) await clearResolvedOverrideField(item, condition, field);
-        else await setResolvedOverride(item, condition, field, value);
+        await setResolvedOverride(item, condition, field, value);
         rerenderOpenSkirmishSheets(actor);
       }
       catch (error) {
+        if (field === "magical") input.checked = input.dataset.gtwPrevious === "true";
         input.disabled = false;
         ui.notifications.error(L("GTWARBANDS.Notification.SkirmishProfilesUpdateFailed"));
         console.error(`${MODULE_ID} | Failed to update Skirmish attack override.`, error);

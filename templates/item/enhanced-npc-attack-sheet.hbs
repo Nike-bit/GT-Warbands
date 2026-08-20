@@ -19,7 +19,7 @@
 
   <section class="SD-content-body flex1">
     <section class="tab tab-details" data-group="primary" data-tab="tab-details">
-      <div class="gt-wb-enhanced-npc-attack {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
+      <div class="gt-wb-enhanced-npc-attack {{#if gtw.defenses.active}}has-defense-integration{{/if}}">
         <section class="gt-wb-enhanced-attack-block {{#if gtw.skirmish}}gt-wb-skirmish-profiles{{else}}gt-wb-enhanced-attack-configuration{{/if}}">
         {{#if gtw.skirmish}}
             <h2>{{gtwLocalize "GTWARBANDS.Skirmish.ConditionProfiles"}}</h2>
@@ -33,17 +33,17 @@
               </select>
             </label>
 
-            <div class="gt-wb-skirmish-profile-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
+            <div class="gt-wb-skirmish-profile-grid {{#if gtw.defenses.active}}has-defense-integration{{/if}}">
               <strong>{{gtwLocalize "GTWARBANDS.Skirmish.Condition"}}</strong>
               <strong>{{gtwLocalize "GTWARBANDS.Skirmish.NumAttacks"}}</strong>
               <strong>{{gtwLocalize "GTWARBANDS.Skirmish.AttackBonus"}}</strong>
               <strong>{{gtwLocalize "GTWARBANDS.Skirmish.DamageFormula"}}</strong>
               <strong>{{localize "SHADOWDARK.item.effect.predefined_effect.critMultiplier"}}</strong>
-              {{#if gtw.ds.active}}<strong>{{gtw.ds.magicalLabel}}</strong>{{/if}}
+              {{#if gtw.defenses.active}}<strong>{{gtw.defenses.magicalLabel}}</strong>{{/if}}
 
               {{#each gtw.profiles as |profile|}}
                 <div
-                  class="gt-wb-skirmish-profile-row {{#if ../gtw.ds.active}}has-ds-compatibility{{/if}} {{#if profile.active}}is-active{{/if}} {{#if profile.manual}}is-manual{{/if}}"
+                  class="gt-wb-skirmish-profile-row {{#if ../gtw.defenses.active}}has-defense-integration{{/if}} {{#if profile.active}}is-active{{/if}} {{#if profile.manual}}is-manual{{/if}}"
                   data-condition="{{profile.condition}}"
                 >
                   <strong>{{profile.label}}</strong>
@@ -119,13 +119,13 @@
                       {{#unless profile.canResetFields.criticalMultiplier}}disabled{{/unless}}
                     ><i class="fas fa-rotate-left" aria-hidden="true"></i></button>
                   </div>
-                  {{#if ../gtw.ds.active}}
+                  {{#if ../gtw.defenses.active}}
                     <div class="gt-wb-skirmish-profile-field gt-wb-skirmish-magical-field {{#if profile.manualFields.magical}}is-manual{{/if}}">
                       <input
                         type="checkbox"
                         data-profile-field="magical"
                         data-gtw-previous="{{profile.magical}}"
-                        aria-label="{{../gtw.ds.magicalLabel}}"
+                        aria-label="{{../gtw.defenses.magicalLabel}}"
                         {{checked profile.magical}}
                         {{#unless profile.editable}}disabled{{/unless}}
                       >
@@ -145,7 +145,7 @@
         {{else}}
             <h2>{{gtwLocalize "GTWARBANDS.Skirmish.AttackConfiguration"}}</h2>
 
-            <div class="gt-wb-enhanced-attack-config-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
+            <div class="gt-wb-enhanced-attack-config-grid {{#if gtw.defenses.active}}has-defense-integration{{/if}}">
               <label class="gt-wb-enhanced-field">
                 <strong>{{localize "SHADOWDARK.item.npc_attack_count"}}</strong>
                 <input name="system.attack.num" type="text" value="{{item.system.attack.num}}">
@@ -166,22 +166,22 @@
                 {{numberInput system.bonuses.critical.multiplier name="system.bonuses.critical.multiplier" placeholder="2"}}
               </label>
 
-              {{#if gtw.ds.active}}
-                <label class="gt-wb-enhanced-field gt-wb-ds-magical-field">
-                  <strong>{{gtw.ds.magicalLabel}}</strong>
+              {{#if gtw.defenses.active}}
+                <label class="gt-wb-enhanced-field gt-wb-defense-magical-field">
+                  <strong>{{gtw.defenses.magicalLabel}}</strong>
                   <input
                     type="checkbox"
-                    data-gtw-ds-field="magical"
-                    data-gtw-previous="{{gtw.ds.magical}}"
-                    {{checked gtw.ds.magical}}
-                    {{#unless gtw.ds.editable}}disabled{{/unless}}
+                    data-gtw-defense-field="magical"
+                    data-gtw-previous="{{gtw.defenses.magical}}"
+                    {{checked gtw.defenses.magical}}
+                    {{#unless gtw.defenses.editable}}disabled{{/unless}}
                   >
                 </label>
               {{/if}}
             </div>
         {{/if}}
 
-          <div class="gt-wb-enhanced-attack-secondary-grid {{#if gtw.ds.active}}has-ds-compatibility{{/if}}">
+          <div class="gt-wb-enhanced-attack-secondary-grid {{#if gtw.defenses.active}}has-defense-integration{{/if}}">
             <div class="gt-wb-enhanced-field gt-wb-enhanced-ranges">
               <strong>{{localize "SHADOWDARK.app.npc_attack_ranges.title"}}</strong>
               <a data-action="npc-attack-ranges">
@@ -199,15 +199,15 @@
               >
             </label>
 
-            {{#if gtw.ds.active}}
-              <label class="gt-wb-enhanced-field gt-wb-ds-ability-field">
-                <strong>{{gtw.ds.abilityLabel}}</strong>
+            {{#if gtw.defenses.active}}
+              <label class="gt-wb-enhanced-field gt-wb-defense-ability-field">
+                <strong>{{gtw.defenses.abilityLabel}}</strong>
                 <select
-                  data-gtw-ds-field="ability"
-                  data-gtw-previous="{{gtw.ds.selectedAbility}}"
-                  {{#unless gtw.ds.editable}}disabled{{/unless}}
+                  data-gtw-defense-field="ability"
+                  data-gtw-previous="{{gtw.defenses.selectedAbility}}"
+                  {{#unless gtw.defenses.editable}}disabled{{/unless}}
                 >
-                  {{#each gtw.ds.abilities as |ability|}}
+                  {{#each gtw.defenses.abilities as |ability|}}
                     <option value="{{ability.value}}" {{#if ability.selected}}selected{{/if}}>{{ability.label}}</option>
                   {{/each}}
                 </select>

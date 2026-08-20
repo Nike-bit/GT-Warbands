@@ -24,7 +24,8 @@
   ],
   "styles": [
     "styles/gt-warbands.css",
-    "styles/skirmish-attack-counter.css"
+    "styles/skirmish-attack-counter.css",
+    "styles/monster-defenses.css"
   ],
   "languages": [
     {

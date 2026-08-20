@@ -210,10 +210,22 @@ function refreshRegisteredLabels() {
   updateRegistryEntry(game.settings.settings, "skirmishRules", {
     name: localize("GTWARBANDS.SkirmishRules.Title")
   });
+  updateRegistryEntry(game.settings.settings, "singleNpcSkirmishRules", {
+    name: localize("GTWARBANDS.SingleNpcRules.Title")
+  });
+  updateRegistryEntry(game.settings.settings, "enableMonsterDefenses", {
+    name: localize("GTWARBANDS.Settings.EnableMonsterDefenses"),
+    hint: localize("GTWARBANDS.Settings.EnableMonsterDefensesHint")
+  });
   updateRegistryEntry(game.settings.menus, "skirmishRulesMenu", {
     name: localize("GTWARBANDS.SkirmishRules.Title"),
     label: localize("GTWARBANDS.SkirmishRules.Configure"),
     hint: localize("GTWARBANDS.SkirmishRules.Hint")
+  });
+  updateRegistryEntry(game.settings.menus, "singleNpcSkirmishRulesMenu", {
+    name: localize("GTWARBANDS.SingleNpcRules.Title"),
+    label: localize("GTWARBANDS.SingleNpcRules.Configure"),
+    hint: localize("GTWARBANDS.SingleNpcRules.Hint")
   });
   updateRegistryEntry(game.settings.menus, "profileMenu", {
     name: localize("GTWARBANDS.ProfileMenu.Name"),
@@ -225,10 +237,9 @@ function refreshRegisteredLabels() {
 function isNpcSkirmishActive(actor) {
   if (game.system.id !== "shadowdark" || actor?.type !== "NPC") return false;
   try {
-    const stored = actor.getFlag(MODULE_ID, "isSkirmishWarband");
-    return typeof stored === "boolean"
-      ? stored
-      : Boolean(game.settings.get(MODULE_ID, "enableSkirmishNpcSupport"));
+    if (!game.settings.get(MODULE_ID, "enableSkirmishNpcSupport")) return false;
+    return actor.getFlag(MODULE_ID, "isSkirmishWarband") === true
+      || Boolean(game.settings.get(MODULE_ID, "enhancedNpcAttackSheets"));
   }
   catch (_error) {
     return false;
@@ -236,8 +247,8 @@ function isNpcSkirmishActive(actor) {
 }
 
 function shouldRerenderApplication(application) {
-  if (["gt-warbands-profile-config", "gt-warbands-skirmish-rules-config"].includes(application?.id)
-    || ["gt-warbands-profile-config", "gt-warbands-skirmish-rules-config"].includes(application?.options?.id)) {
+  if (["gt-warbands-profile-config", "gt-warbands-skirmish-rules-config", "gt-warbands-single-npc-rules-config"].includes(application?.id)
+    || ["gt-warbands-profile-config", "gt-warbands-skirmish-rules-config", "gt-warbands-single-npc-rules-config"].includes(application?.options?.id)) {
     return true;
   }
 

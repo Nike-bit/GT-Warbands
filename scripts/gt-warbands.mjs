@@ -1,5 +1,11 @@
 import { registerSkirmishHooks, registerSkirmishSettings } from "./skirmish.mjs";
 import {
+  activateMonsterDefenses,
+  registerMonsterDefensesHooks,
+  registerMonsterDefensesSettings
+} from "./defenses/monster-defenses.mjs";
+import { registerSettingsVisibilityHooks } from "./settings-visibility.mjs";
+import {
   activateLanguage,
   format as formatGtw,
   getLocalizationApi,
@@ -738,6 +744,9 @@ Hooks.once("init", () => {
   registerSettings();
   registerSkirmishSettings();
   registerSkirmishHooks();
+  registerMonsterDefensesSettings();
+  registerMonsterDefensesHooks();
+  registerSettingsVisibilityHooks();
   Object.assign(CONFIG.Actor.dataModels, { [WARBAND_TYPE]: WarbandModel });
   Object.assign(CONFIG.Item.dataModels, { [ATTACK_TYPE]: WarbandAttackModel });
   const DSC = foundry.applications.apps.DocumentSheetConfig;
@@ -748,6 +757,7 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", async () => {
   await activateLanguage();
+  await activateMonsterDefenses();
   const mod = game.modules.get(MODULE_ID);
   if (mod) mod.api = {
     WARBAND_TYPE, ATTACK_TYPE, DEFAULT_PROFILE, getActiveProfile, deriveWarband, deriveDamage,

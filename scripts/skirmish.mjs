@@ -6,15 +6,16 @@ import {
   setAttackCounterMaximum
 } from "./skirmish-attack-counter.mjs";
 import {
-  activateDsMonsterDefensesSheetListeners,
-  attachDsMonsterDefensesMagicalOverride,
-  getDsMonsterDefensesBaseMagical,
-  getDsMonsterDefensesSheetContext
-} from "./skirmish-ds-monster-defenses.mjs";
+  activateMonsterDefensesSheetListeners,
+  attachEffectiveMagicalOverride,
+  getEffectiveMagicalBase,
+  getMonsterDefensesSheetContext
+} from "./defenses/attack-traits.mjs";
 import {
-  enhancedNpcAttackSheetsEnabled,
+  getSingleNpcRules,
   getSkirmishRules,
-  registerSkirmishRuleSettings
+  registerSkirmishRuleSettings,
+  singleNpcScalingEnabled
 } from "./skirmish-rules.mjs";
 import { format as formatGtw, localize as localizeGtw } from "./localization.mjs";
 
@@ -27,6 +28,8 @@ const SKIRMISH_FLAG = "isSkirmishWarband";
 const CONDITION_OVERRIDE_FLAG = "conditionOverride";
 const SKIRMISH_PROFILES_FLAG = "skirmishProfiles";
 const SKIRMISH_ATTACK_OVERRIDES_FLAG = "skirmishAttackOverrides";
+const SINGLE_NPC_PROFILES_FLAG = "singleNpcProfiles";
+const SINGLE_NPC_ATTACK_OVERRIDES_FLAG = "singleNpcAttackOverrides";
 const TOGGLE_CLASS = "gt-wb-skirmish-toggle";
 const CONDITION_CLASS = "gt-wb-skirmish-condition";
 const EFFECTIVE_DISPLAY_CLASS = "gt-wb-skirmish-effective-attack";
@@ -74,8 +77,9 @@ function isShadowdarkNpcAttack(item) {
   return game.system.id === SHADOWDARK_SYSTEM_ID && item?.type === SHADOWDARK_NPC_ATTACK_TYPE;
 }
 
-function isSingleNpcSkirmishDefaultEnabled() {
-  return Boolean(game.settings.get(MODULE_ID, SKIRMISH_SETTING));
+function skirmishModeEnabled() {
+  try { return Boolean(game.settings.get(MODULE_ID, SKIRMISH_SETTING)); }
+  catch (_error) { return false; }
 }
 
 function getSkirmishActorOverride(actor) {
@@ -85,7 +89,13 @@ function getSkirmishActorOverride(actor) {
 
 function isSkirmishWarband(actor) {
   if (!isShadowdarkNpc(actor)) return false;
-  return getSkirmishActorOverride(actor) ?? isSingleNpcSkirmishDefaultEnabled();
+  return skirmishModeEnabled() && getSkirmishActorOverride(actor) === true;
+}
+
+function getNpcSkirmishMode(actor) {
+  if (!isShadowdarkNpc(actor) || !skirmishModeEnabled()) return "none";
+  if (getSkirmishActorOverride(actor) === true) return "full";
+  return singleNpcScalingEnabled() ? "single" : "none";
 }
 function mayEdit(sheet, document) { return Boolean(sheet?.isEditable && document?.isOwner); }
 
@@ -123,7 +133,7 @@ function nativeAttackProfile(item) {
     attackBonus: Math.trunc(Number(item?.system?.bonuses?.attackBonus ?? 0) || 0),
     damage: String(item?.system?.damage?.value ?? "").trim(),
     criticalMultiplier: Math.max(1, Math.trunc(Number(item?.system?.bonuses?.critical?.multiplier) || 2)),
-    magical: getDsMonsterDefensesBaseMagical(item)
+    magical: getEffectiveMagicalBase(item)
   };
 }
 
@@ -172,8 +182,20 @@ function normalizeLegacyProfile(profile, base) {
   };
 }
 
-function inferLegacyModifiers(condition, legacy, base) {
-  const defaults = getSkirmishRules()[condition];
+function rulesForMode(mode) {
+  return mode === "single" ? getSingleNpcRules() : getSkirmishRules();
+}
+
+function profileFlagForMode(mode) {
+  return mode === "single" ? SINGLE_NPC_PROFILES_FLAG : SKIRMISH_PROFILES_FLAG;
+}
+
+function overrideFlagForMode(mode) {
+  return mode === "single" ? SINGLE_NPC_ATTACK_OVERRIDES_FLAG : SKIRMISH_ATTACK_OVERRIDES_FLAG;
+}
+
+function inferLegacyModifiers(condition, legacy, base, mode) {
+  const defaults = rulesForMode(mode)[condition];
   const baseDamage = parseSimpleDamage(base.damage);
   const legacyDamage = parseSimpleDamage(legacy.damage);
   let damageDiceCountModifier = defaults.damageDiceCountModifier;
@@ -190,39 +212,39 @@ function inferLegacyModifiers(condition, legacy, base) {
   };
 }
 
-function getConditionProfile(item, condition) {
+function getConditionProfile(item, condition, mode) {
   const base = nativeAttackProfile(item);
-  const stored = item?.getFlag(MODULE_ID, SKIRMISH_PROFILES_FLAG)?.[condition];
-  const rules = getSkirmishRules();
+  const stored = item?.getFlag(MODULE_ID, profileFlagForMode(mode))?.[condition];
+  const rules = rulesForMode(mode);
   const defaults = rules[condition] ?? rules.battered;
   if (!stored || isModifierProfile(stored)) return { mode: "modifiers", modifiers: normalizeModifiers(stored, defaults) };
   const absolute = normalizeLegacyProfile(stored, base);
-  return { mode: "legacy", absolute, modifiers: inferLegacyModifiers(condition, absolute, base) };
+  return { mode: "legacy", absolute, modifiers: inferLegacyModifiers(condition, absolute, base, mode) };
 }
 
-function getResolvedOverride(item, condition) {
-  const stored = item?.getFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG)?.[condition];
+function getResolvedOverride(item, condition, mode = getNpcSkirmishMode(item?.parent)) {
+  const stored = item?.getFlag(MODULE_ID, overrideFlagForMode(mode))?.[condition];
   return stored && typeof stored === "object" ? stored : {};
 }
 
-function hasResolvedOverrideField(item, condition, field) {
-  const override = getResolvedOverride(item, condition);
+function hasResolvedOverrideField(item, condition, field, mode) {
+  const override = getResolvedOverride(item, condition, mode);
   if (!Object.hasOwn(override, field) || override[field] == null) return false;
   return field !== "magical" || typeof override[field] === "boolean";
 }
 
-function resolveEffectiveMagicalAttack(item, condition, override = getResolvedOverride(item, condition)) {
-  const base = getDsMonsterDefensesBaseMagical(item);
+function resolveEffectiveMagicalAttack(item, condition, mode, override = getResolvedOverride(item, condition, mode)) {
+  const base = getEffectiveMagicalBase(item);
   if (base === undefined) return undefined;
   return Object.hasOwn(override, "magical") && typeof override.magical === "boolean"
     ? override.magical
     : base;
 }
 
-function hasItemCustomization(item, condition) {
-  const legacy = item?.getFlag(MODULE_ID, SKIRMISH_PROFILES_FLAG)?.[condition];
-  const resolved = getResolvedOverride(item, condition);
-  return Boolean(legacy || Object.keys(resolved).some(field => hasResolvedOverrideField(item, condition, field)));
+function hasItemCustomization(item, condition, mode) {
+  const legacy = item?.getFlag(MODULE_ID, profileFlagForMode(mode))?.[condition];
+  const resolved = getResolvedOverride(item, condition, mode);
+  return Boolean(legacy || Object.keys(resolved).some(field => hasResolvedOverrideField(item, condition, field, mode)));
 }
 
 function applyResolvedOverride(effective, override) {
@@ -242,11 +264,11 @@ function applyResolvedOverride(effective, override) {
   };
 }
 
-function deriveEffectiveAttack(item, condition = getActiveCondition(item?.parent)) {
+function deriveEffectiveAttack(item, condition = getActiveCondition(item?.parent), mode = getNpcSkirmishMode(item?.parent)) {
   const base = nativeAttackProfile(item);
   if (!COMBAT_CONDITIONS.includes(condition)) return { ...base, condition, base, damageTransformed: false, legacy: false };
-  const profile = getConditionProfile(item, condition);
-  const override = getResolvedOverride(item, condition);
+  const profile = getConditionProfile(item, condition, mode);
+  const override = getResolvedOverride(item, condition, mode);
   if (profile.mode === "legacy") {
     const effective = applyResolvedOverride({
       ...profile.absolute,
@@ -256,7 +278,7 @@ function deriveEffectiveAttack(item, condition = getActiveCondition(item?.parent
       damageTransformed: profile.absolute.damage !== base.damage,
       legacy: true
     }, override);
-    return { ...effective, magical: resolveEffectiveMagicalAttack(item, condition, override) };
+    return { ...effective, magical: resolveEffectiveMagicalAttack(item, condition, mode, override) };
   }
   const modifiers = profile.modifiers;
   const damage = transformDamageFormula(base.damage, modifiers.damageDiceCountModifier, modifiers.damageDieCategoryModifier);
@@ -270,7 +292,7 @@ function deriveEffectiveAttack(item, condition = getActiveCondition(item?.parent
     damageTransformed: damage.transformed,
     legacy: false
   }, override);
-  return { ...effective, magical: resolveEffectiveMagicalAttack(item, condition, override) };
+  return { ...effective, magical: resolveEffectiveMagicalAttack(item, condition, mode, override) };
 }
 
 function signedBonus(value) {
@@ -295,17 +317,17 @@ function resolveConfigAttack(config) {
   const item = resolveUuidSync(config?.itemUuid);
   const actor = item?.parent;
   if (!isShadowdarkNpcAttack(item) || !isShadowdarkNpc(actor)) return null;
-  const skirmish = isSkirmishWarband(actor);
-  if (!skirmish && !enhancedNpcAttackSheetsEnabled()) return null;
-  const condition = skirmish ? getActiveCondition(actor) : null;
-  const effective = skirmish ? deriveEffectiveAttack(item, condition) : nativeAttackProfile(item);
-  return { item, actor, condition, effective, skirmish };
+  const mode = getNpcSkirmishMode(actor);
+  if (mode === "none") return null;
+  const condition = getActiveCondition(actor);
+  const effective = deriveEffectiveAttack(item, condition, mode);
+  return { item, actor, condition, effective, skirmish: true, mode };
 }
 
 function applyEffectiveAttackConfig(config, { setCounter = true } = {}) {
   const resolved = resolveConfigAttack(config);
   if (!resolved) return null;
-  const { item, actor, condition, effective, skirmish } = resolved;
+  const { item, actor, condition, effective, skirmish, mode } = resolved;
   if (skirmish && condition === "defeated") return { item, actor, condition, effective, skirmish, defeated: true };
   if (skirmish && config.mainRoll?.base) {
     config.mainRoll.bonus = signedBonus(effective.attackBonus);
@@ -318,9 +340,9 @@ function applyEffectiveAttackConfig(config, { setCounter = true } = {}) {
     config.damageRoll.formula = appendBonus(effective.damage, item.system.bonuses?.damageBonus);
     config.damageRoll.criticalMultiplier = effective.criticalMultiplier;
   }
-  if (skirmish) attachDsMonsterDefensesMagicalOverride(config, effective.magical);
+  if (skirmish) attachEffectiveMagicalOverride(config, effective.magical);
   if (setCounter) setAttackCounterMaximum(config, effective.attackCount);
-  return { item, actor, condition, effective, skirmish, defeated: false };
+  return { item, actor, condition, effective, skirmish, mode, defeated: false };
 }
 
 function rerenderOpenSkirmishSheets(actor = null) {
@@ -341,6 +363,7 @@ function rerenderOpenSkirmishSheets(actor = null) {
 }
 
 function injectSkirmishToggle(sheet, root, actor) {
+  if (!skirmishModeEnabled()) return;
   if (root.querySelector(`.${TOGGLE_CLASS}`)) return;
   const hpValue = root.querySelector('input[name="system.attributes.hp.value"]');
   const hpBox = hpValue?.closest(".SD-box");
@@ -351,7 +374,7 @@ function injectSkirmishToggle(sheet, root, actor) {
     return;
   }
   const editable = mayEdit(sheet, actor);
-  const active = isSkirmishWarband(actor);
+  const active = getSkirmishActorOverride(actor) === true;
   const button = document.createElement("a");
   button.classList.add(TOGGLE_CLASS, "fas", "fa-users");
   button.classList.toggle("is-active", active);
@@ -382,7 +405,7 @@ function injectSkirmishToggle(sheet, root, actor) {
 }
 
 function injectConditionDisplay(sheet, root, actor) {
-  if (!isSkirmishWarband(actor) || root.querySelector(`.${CONDITION_CLASS}`)) return;
+  if (getNpcSkirmishMode(actor) === "none" || root.querySelector(`.${CONDITION_CLASS}`)) return;
   const hpValue = root.querySelector('input[name="system.attributes.hp.value"]');
   const hpBox = hpValue?.closest(".SD-box");
   const valueGrid = hpBox?.querySelector(".content .value-grid");
@@ -434,14 +457,15 @@ async function renderEffectiveAttackDisplay(item, effective) {
 }
 
 async function updateEffectiveAttackDisplays(root, actor) {
-  if (!isSkirmishWarband(actor)) return;
+  const mode = getNpcSkirmishMode(actor);
+  if (mode === "none") return;
   const condition = getActiveCondition(actor);
   for (const row of root.querySelectorAll(".item.attack[data-item-id]")) {
     const item = actor.items.get(row.dataset.itemId);
     if (!isShadowdarkNpcAttack(item)) continue;
     const existingLink = row.querySelector('[data-action="item-attack"]');
     const container = document.createElement("div");
-    container.innerHTML = await renderEffectiveAttackDisplay(item, deriveEffectiveAttack(item, condition));
+    container.innerHTML = await renderEffectiveAttackDisplay(item, deriveEffectiveAttack(item, condition, mode));
     const replacementLink = container.querySelector('[data-action="item-attack"]');
     if (!existingLink || !replacementLink) continue;
     existingLink.replaceChildren(...replacementLink.childNodes);
@@ -492,42 +516,45 @@ async function injectSkirmishActorUi(sheet, html) {
   const root = getHtmlRoot(html);
   if (!root) return;
   injectSkirmishToggle(sheet, root, actor);
-  if (!isSkirmishWarband(actor)) return;
+  const mode = getNpcSkirmishMode(actor);
+  if (mode === "none") return;
   injectConditionDisplay(sheet, root, actor);
-  interceptSkirmishHpRoll(root, actor);
+  if (mode === "full") interceptSkirmishHpRoll(root, actor);
   await updateEffectiveAttackDisplays(root, actor);
 }
 
-async function setResolvedOverride(item, condition, field, value) {
-  const overrides = foundry.utils.deepClone(item.getFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG) ?? {});
+async function setResolvedOverride(item, condition, field, value, mode = getNpcSkirmishMode(item?.parent)) {
+  const flag = overrideFlagForMode(mode);
+  const overrides = foundry.utils.deepClone(item.getFlag(MODULE_ID, flag) ?? {});
   overrides[condition] ??= {};
   overrides[condition][field] = value;
-  await item.setFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG, overrides);
+  await item.setFlag(MODULE_ID, flag, overrides);
 }
 
-async function clearResolvedOverrideField(item, condition, field) {
-  const overrides = foundry.utils.deepClone(item.getFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG) ?? {});
+async function clearResolvedOverrideField(item, condition, field, mode = getNpcSkirmishMode(item?.parent)) {
+  const flag = overrideFlagForMode(mode);
+  const overrides = foundry.utils.deepClone(item.getFlag(MODULE_ID, flag) ?? {});
   if (!Object.hasOwn(overrides[condition] ?? {}, field)) return;
   delete overrides[condition][field];
   if (!Object.keys(overrides[condition]).length) delete overrides[condition];
-  if (Object.keys(overrides).length) await item.setFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG, overrides);
-  else await item.unsetFlag(MODULE_ID, SKIRMISH_ATTACK_OVERRIDES_FLAG);
+  if (Object.keys(overrides).length) await item.setFlag(MODULE_ID, flag, overrides);
+  else await item.unsetFlag(MODULE_ID, flag);
 }
 
 function shouldUseEnhancedNpcAttackSheet(item) {
   const actor = item?.parent;
   if (!isShadowdarkNpcAttack(item) || !isShadowdarkNpc(actor)) return false;
-  const skirmish = isSkirmishWarband(actor);
-  return skirmish || enhancedNpcAttackSheetsEnabled();
+  return getNpcSkirmishMode(actor) !== "none";
 }
 
 function buildEnhancedNpcAttackContext(sheet, item) {
   const actor = item.parent;
-  const skirmish = isSkirmishWarband(actor);
+  const mode = getNpcSkirmishMode(actor);
+  const skirmish = mode !== "none";
   const editable = mayEdit(sheet, item) && actor.isOwner;
   const current = getConditionOverride(actor);
   const activeCondition = getActiveCondition(actor);
-  const ds = getDsMonsterDefensesSheetContext(item, editable);
+  const defenses = getMonsterDefensesSheetContext(item, editable);
   return {
     enhanced: true,
     skirmish,
@@ -539,12 +566,12 @@ function buildEnhancedNpcAttackContext(sheet, item) {
       selected: value === current
     })),
     profiles: skirmish ? COMBAT_CONDITIONS.map(condition => {
-      const effective = deriveEffectiveAttack(item, condition);
-      const override = getResolvedOverride(item, condition);
-      const manual = hasItemCustomization(item, condition);
+      const effective = deriveEffectiveAttack(item, condition, mode);
+      const override = getResolvedOverride(item, condition, mode);
+      const manual = hasItemCustomization(item, condition, mode);
       const manualFields = Object.fromEntries([
         "attackCount", "attackBonus", "damage", "criticalMultiplier", "magical"
-      ].map(field => [field, hasResolvedOverrideField(item, condition, field)]));
+      ].map(field => [field, hasResolvedOverrideField(item, condition, field, mode)]));
       const canResetFields = Object.fromEntries(Object.entries(manualFields)
         .map(([field, manualField]) => [field, editable && manualField]));
       return {
@@ -554,7 +581,7 @@ function buildEnhancedNpcAttackContext(sheet, item) {
         attackBonus: signedBonus(effective.attackBonus),
         damage: effective.damage,
         criticalMultiplier: effective.criticalMultiplier,
-        magical: ds.active && effective.magical === true,
+        magical: defenses.active && effective.magical === true,
         manualFields,
         canResetFields,
         active: condition === activeCondition,
@@ -562,7 +589,8 @@ function buildEnhancedNpcAttackContext(sheet, item) {
         editable
       };
     }) : [],
-    ds
+    mode,
+    defenses
   };
 }
 
@@ -595,7 +623,8 @@ function activateProfileOverrideListeners(sheet, item, root, actor) {
       event.stopPropagation();
       const condition = input.closest("[data-condition]")?.dataset.condition;
       if (!COMBAT_CONDITIONS.includes(condition)) return;
-      const effective = deriveEffectiveAttack(item, condition);
+      const mode = getNpcSkirmishMode(actor);
+      const effective = deriveEffectiveAttack(item, condition, mode);
       const field = input.dataset.profileField;
       let value;
       if (field === "damage") {
@@ -626,7 +655,7 @@ function activateProfileOverrideListeners(sheet, item, root, actor) {
 
       input.disabled = true;
       try {
-        await setResolvedOverride(item, condition, field, value);
+        await setResolvedOverride(item, condition, field, value, mode);
         rerenderOpenSkirmishSheets(actor);
       }
       catch (error) {
@@ -647,7 +676,7 @@ function activateProfileOverrideListeners(sheet, item, root, actor) {
       if (!COMBAT_CONDITIONS.includes(condition) || !field) return;
       reset.disabled = true;
       try {
-        await clearResolvedOverrideField(item, condition, field);
+        await clearResolvedOverrideField(item, condition, field, getNpcSkirmishMode(actor));
         rerenderOpenSkirmishSheets(actor);
       }
       catch (error) {
@@ -665,11 +694,11 @@ function activateEnhancedNpcAttackListeners(sheet, html) {
   const root = getHtmlRoot(html);
   if (!root) return;
   const actor = item.parent;
-  if (isSkirmishWarband(actor)) {
+  if (getNpcSkirmishMode(actor) !== "none") {
     activateConditionOverrideListener(sheet, root, actor);
     activateProfileOverrideListeners(sheet, item, root, actor);
   }
-  activateDsMonsterDefensesSheetListeners({ sheet, item, root });
+  activateMonsterDefensesSheetListeners({ sheet, item, root });
   Hooks.callAll("gt-warbands.renderEnhancedNpcAttackDetails", { sheet, item, actor, root });
 }
 
@@ -783,9 +812,10 @@ export function registerSkirmishHooks() {
 }
 
 export const skirmishTestApi = Object.freeze({
-  isSingleNpcSkirmishDefaultEnabled,
+  skirmishModeEnabled,
   getSkirmishActorOverride,
   isSkirmishWarband,
+  getNpcSkirmishMode,
   deriveAutomaticCondition,
   parseSimpleDamage,
   transformDamageFormula,

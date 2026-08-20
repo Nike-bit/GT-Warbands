@@ -72,10 +72,10 @@
 .shadowdark.sheet.item .gt-wb-skirmish-condition-control > span { font-weight:700; }
 .shadowdark.sheet.item .gt-wb-skirmish-condition-control select { width:100%; min-width:0; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-grid { display:grid; grid-template-columns:minmax(68px,1.05fr) repeat(4,minmax(96px,1fr)); align-items:center; gap:5px 7px; overflow-x:auto; }
-.shadowdark.sheet.item .gt-wb-skirmish-profile-grid.has-ds-compatibility { grid-template-columns:minmax(68px,1.05fr) repeat(4,minmax(96px,1fr)) minmax(116px,1.1fr); }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-grid.has-defense-integration { grid-template-columns:minmax(68px,1.05fr) repeat(4,minmax(96px,1fr)) minmax(116px,1.1fr); }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-grid > strong { min-width:0; text-align:center; font-size:.7rem; line-height:1.15; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row { grid-column:1 / -1; display:grid; grid-template-columns:minmax(68px,1.05fr) repeat(4,minmax(96px,1fr)); align-items:center; gap:5px 7px; padding:4px; border:1px solid transparent; }
-.shadowdark.sheet.item .gt-wb-skirmish-profile-row.has-ds-compatibility { grid-template-columns:minmax(68px,1.05fr) repeat(4,minmax(96px,1fr)) minmax(116px,1.1fr); }
+.shadowdark.sheet.item .gt-wb-skirmish-profile-row.has-defense-integration { grid-template-columns:minmax(68px,1.05fr) repeat(4,minmax(96px,1fr)) minmax(116px,1.1fr); }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row.is-active { border-color:currentColor; background:rgba(127,127,127,.12); }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row.is-manual { border-style:dashed; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-row > strong { min-width:0; font-size:.75rem; }
@@ -86,14 +86,14 @@
 .shadowdark.sheet.item .gt-wb-skirmish-magical-field input[type="checkbox"] { width:auto; margin:0; justify-self:center; }
 .shadowdark.sheet.item .gt-wb-skirmish-profile-field button { width:24px; height:24px; min-height:24px; margin:0; padding:0; font-size:.7rem; }
 .shadowdark.sheet.item .gt-wb-enhanced-attack-config-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:start; gap:12px 14px; }
-.shadowdark.sheet.item .gt-wb-enhanced-attack-config-grid.has-ds-compatibility { grid-template-columns:repeat(5,minmax(0,1fr)); }
+.shadowdark.sheet.item .gt-wb-enhanced-attack-config-grid.has-defense-integration { grid-template-columns:repeat(5,minmax(0,1fr)); }
 .shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; gap:12px 14px; }
-.shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid.has-ds-compatibility { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid.has-defense-integration { grid-template-columns:repeat(3,minmax(0,1fr)); }
 .shadowdark.sheet.item .gt-wb-enhanced-field { display:grid; align-content:start; gap:5px; min-width:0; margin:0; }
 .shadowdark.sheet.item .gt-wb-enhanced-field > strong { min-width:0; font-size:.75rem; line-height:1.2; }
 .shadowdark.sheet.item .gt-wb-enhanced-field input,
 .shadowdark.sheet.item .gt-wb-enhanced-field select { min-width:0; width:100%; }
-.shadowdark.sheet.item .gt-wb-ds-magical-field input[type="checkbox"] { width:auto; margin:0; justify-self:center; }
+.shadowdark.sheet.item .gt-wb-defense-magical-field input[type="checkbox"] { width:auto; margin:0; justify-self:center; }
 .shadowdark.sheet.item .gt-wb-enhanced-ranges .properties-list { min-height:28px; }
 .gt-wb-skirmish-rules-config { padding:10px; }
 .gt-wb-skirmish-rules-grid { display:grid; grid-template-columns:minmax(90px,1fr) repeat(4,minmax(80px,1fr)); align-items:center; gap:6px 8px; }
@@ -105,8 +105,8 @@
   .shadowdark.sheet.item .gt-wb-skirmish-profile-grid,
   .shadowdark.sheet.item .gt-wb-skirmish-profile-row { gap:4px; }
   .shadowdark.sheet.item .gt-wb-enhanced-attack-config-grid,
-  .shadowdark.sheet.item .gt-wb-enhanced-attack-config-grid.has-ds-compatibility,
+  .shadowdark.sheet.item .gt-wb-enhanced-attack-config-grid.has-defense-integration,
   .shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid,
-  .shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid.has-ds-compatibility { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .shadowdark.sheet.item .gt-wb-enhanced-attack-secondary-grid.has-defense-integration { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .gt-wb-skirmish-rules-grid { grid-template-columns:minmax(72px,1fr) repeat(4,minmax(58px,1fr)); gap:4px; }
 }

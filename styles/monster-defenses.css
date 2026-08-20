@@ -1,0 +1,23 @@
+.gtw-defenses-header label { letter-spacing:0.02em; }
+.gtw-defenses-content { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:0; padding:0; }
+.gtw-defense-panel { display:flex; flex-direction:column; gap:0.38rem; min-width:0; padding:0.45rem 0.55rem 0.55rem; }
+.gtw-defense-panel + .gtw-defense-panel { border-left:1px solid rgba(0,0,0,0.3); }
+.gtw-defense-panel-title { min-height:1.35rem; display:flex; align-items:center; justify-content:space-between; gap:0.4rem; padding-bottom:0.18rem; border-bottom:1px solid rgba(0,0,0,0.22); font-size:0.9rem; font-weight:700; line-height:1.15; }
+.gtw-spell-title { justify-content:flex-start; flex-wrap:nowrap; margin:0; }
+.gtw-spell-title input[type="checkbox"] { flex:0 0 auto; margin:0; }
+.gtw-defense-control { display:flex; min-width:0; margin:0; font-size:0.78rem; font-weight:600; line-height:1.15; }
+.gtw-defense-stacked { flex-direction:column; gap:0.18rem; }
+.gtw-defense-inline { align-items:center; justify-content:space-between; gap:0.4rem; }
+.gtw-defense-control select { width:100%; min-width:0; }
+.gtw-defense-control input[type="number"] { width:3.6rem; min-width:0; text-align:center; }
+.gtw-defense-hidden, .gtw-setting-hidden { display:none !important; }
+.shadowdark.chat-card .gtw-defense-resistance-badge { display:inline-block; margin-left:0.45rem; padding:0.05rem 0.3rem; border:1px solid currentColor; border-radius:0.25rem; font-family:var(--font-primary,sans-serif); font-size:0.62em; font-weight:700; line-height:1.35; vertical-align:middle; white-space:nowrap; }
+.shadowdark.chat-card .gtw-defense-resisted-formula { font-weight:600; }
+.gtw-npc-attack-traits { margin-top:0.55rem; padding-top:0.35rem; border-top:1px solid rgba(0,0,0,0.25); }
+.gtw-npc-attack-traits h3 { margin:0 0 0.28rem; }
+.gtw-npc-attack-traits label { display:grid; grid-template-columns:max-content minmax(0,1fr); align-items:center; gap:0.45rem; margin:0.22rem 0; font-weight:600; }
+.gtw-npc-attack-traits select { width:100%; min-width:5.5rem; max-width:9rem; }
+@media (max-width:520px) {
+  .gtw-defenses-content { grid-template-columns:1fr; }
+  .gtw-defense-panel + .gtw-defense-panel { border-left:0; border-top:1px solid rgba(0,0,0,0.3); }
+}

@@ -137,12 +137,16 @@ Warbands have a defense setting against attacks which lack this property:
 
 The underlying rule is profile-driven rather than hardcoded to the word Magic.
 
-### Optional DS-Monster-Defenses compatibility
+### Built-in Monster Defenses
 
-Skirmish NPC attacks provide their effective per-Condition Magical state through
-`config.gtWarbands.attackTraits.magical`. DS-Monster-Defenses v0.5.1-compatible
-consumers can honor this transient boolean without changing either module's
-persistent NPC Attack flags.
+GT-Warbands can provide Nonmagical Defense, Spell Defense, Magical Attack, and
+Attack Ability interactions as an independent world option. Its persistent data
+uses `flags.gt-warbands.monsterDefenses`.
+
+Legacy `flags.ds-monster-defenses` data is copied non-destructively when the GT
+destination is absent. If standalone DS-Monster-Defenses is still active, it
+remains authoritative and GT-Warbands keeps its built-in defense roll processing
+dormant until the standalone module is disabled.
 
 ## Rolled Effectiveness
 
